@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "s3tcli"
+version = "0.1.0"
+description = "JSON validator & S3 uploader CLI"
+requires-python = ">=3.10"
+
+dependencies = [
+  "typer>=0.12",
+  "boto3>=1.34",
+  "pydantic>=2.7",
+  "jsonschema>=4.22"
+]
+
+[project.scripts]
+s3tcli = "s3tcli.cli:app"

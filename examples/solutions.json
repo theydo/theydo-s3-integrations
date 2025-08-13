@@ -1,0 +1,16 @@
+{
+  "format": "THEYDO_SOLUTIONS_V1",
+  "solutions": [
+    {
+      "importKey": "solution-07-08-25",
+      "title": "Hello World Solution 2",
+      "description": "# Heading\n> Quote\n**bold** *italic* ~~del~~ `code`\n- item1\n1. itemA\n---\n```js\nx = true;\n```\n[link](https://example.org) ![img](https://via.placeholder.com/1)",
+      "externalLinks": ["https://example.org"],
+      "status": "draft",
+      "tags": ["demo"],
+      "groups": ["general"],
+      "type": "tutorial",
+      "priority": "LOW"
+    }
+  ]
+}

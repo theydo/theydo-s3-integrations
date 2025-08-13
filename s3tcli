@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Resolve repository root even when invoked via a symlink
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+REPO_DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+
+MAMBA_ROOT="$REPO_DIR/.mamba"
+MICROMAMBA="$MAMBA_ROOT/bin/micromamba"
+ENV_NAME="s3tcli"
+RC_FILE="$REPO_DIR/.mambarc"
+
+if [ ! -x "$MICROMAMBA" ] || ! "$MICROMAMBA" --rc-file "$RC_FILE" env list >/dev/null 2>&1; then
+  printf "\033[31m✖ s3tcli: environment not bootstrapped.\033[0m\n"
+  printf "  Run \033[1mmake\033[0m in %s first.\n" "$REPO_DIR"
+  exit 1
+fi
+
+exec env MAMBA_ROOT_PREFIX="$MAMBA_ROOT" "$MICROMAMBA" --rc-file "$RC_FILE" run -n "$ENV_NAME" s3tcli "$@"

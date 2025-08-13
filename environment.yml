@@ -1,0 +1,10 @@
+# environment.yml
+name: s3tcli
+channels:
+  - conda-forge
+channel_priority: strict
+
+dependencies:
+  - python=3.12
+  - pip
+

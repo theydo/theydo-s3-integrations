@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./InsightsFile.schema.json",
+  "title": "InsightsFile",
+  "description": "JSON import/export for insights",
+  "examples": [
+    {
+      "format": "THEYDO_INSIGHTS_V1",
+      "insights": [
+        {
+          "importKey": "Id-1234",
+          "title": "Some insight"
+        }
+      ]
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "THEYDO_INSIGHTS_V1"
+    },
+    "insights": {
+      "title": "Insights",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Insight"
+      }
+    }
+  },
+  "required": [
+    "format",
+    "insights"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Insight": {
+      "title": "Insight",
+      "description": "Data for one insight",
+      "type": "object",
+      "properties": {
+        "importKey": {
+          "description": "Unique identifier for insight",
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "description": "Description with MarkDown syntax",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "icon": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "empathyScore": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "externalLinks": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "description": "Status value, create",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tags": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groups": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "weight": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "importKey",
+        "title"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
