@@ -1,4 +1,45 @@
-# S3TCLI
+# TheyoDo x AWS S3
+
+As a TheyDo customer you can establish an S3 integration
+to automatically ingest data from any source application 
+as long as it adheres to the specified json schemas.
+
+This repository serves as documentation of:
+- available [schemas](schema/)
+- [examples](examples/) and example use cases
+- [aws cli](#aws-cli) commands for necessary configuration
+- a [cli tool](#s3tcli) to test authentication, validate and upload files
+
+## Requirements 
+- AWS Account - either own or shared by TheyDo
+- S3 bucket info including prefix
+- S3 role info, particularly role_arn and external_id
+
+## AWS CLI
+
+### Profile configuration
+```
+aws configure --profile <source_profile>
+aws configure set region eu-west-1 --profile <source_profile>
+
+aws configure set source_profile <source_profile> --profile <role_profile>
+aws configure set region eu-west-1 --profile <role_profile>
+aws configure set role_arn <role_arn> --profile <role_profile>
+aws configure set external_id <external_id> --profile <role_profile>
+```
+
+### Profile verification
+```
+aws sts get-caller-identity --profile <role_profile>
+```
+
+### Commands
+```
+aws s3 ls s3://<bucket_name>/<bucket_prefix> --summarize --profile jb-test-role
+aws s3 cp <local_file_name> s3://<bucket_name>/<bucket_prefix>/<remote_file_name> --profile <role_profile>
+```
+
+## S3TCLI
 
 A lightweight command‑line helper for:
 
@@ -8,18 +49,20 @@ A lightweight command‑line helper for:
 
 ---
 
-## Quick start
+### Quick start
 
 ```bash
 make            # boots an isolated Python 3.12 env and installs the CLI
 s3tcli --help
 ```
 
+The commands below require the configuration of a profile as described [above](#profile-configuration).
+
 ---
 
-## Commands
+### Commands
 
-### 1) `test-format` — Validate a JSON file
+#### 1) `test-format` — Validate a JSON file
 
 **Arguments**
 
@@ -36,7 +79,7 @@ s3tcli test-format \
 
 ---
 
-### 2) `test-role` — Verify that AssumeRole works
+#### 2) `test-role` — Verify that AssumeRole works
 
 **Arguments**
 
@@ -59,7 +102,7 @@ _On success, the CLI prints the caller identity for the assumed role._
 
 ---
 
-### 3) `test-upload` — Validate then upload to S3
+#### 3) `test-upload` — Validate then upload to S3
 
 **Arguments**
 
