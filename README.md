@@ -1,6 +1,6 @@
 # TheyoDo x AWS S3
 
-As a TheyDo customer you can establish an S3 integration
+As a TheyDo customer you can setup an S3 integration
 to automatically ingest data from any source application 
 as long as it adheres to the specified json schemas.
 
@@ -10,14 +10,23 @@ This repository serves as documentation of:
 - [aws cli](#aws-cli) commands for necessary configuration
 - a [cli tool](#s3tcli) to test authentication, validate and upload files
 
-## Requirements 
-- AWS Account - either own or shared by TheyDo
-- S3 bucket info including prefix
-- S3 role info, particularly role_arn and external_id
+## Required Configuration Variables
+
+### AWS Account & Authentication
+- **AWS Account** - your AWS account, share your **account id** with us to get started. If AWS is not yet part of your infrastructure, reach out and we will be able to provide a solution.
+- **AWS Region** - Target region (typically `eu-west-1`) - shared by TheyDo
+- **Role ARN** - The Amazon Resource Name of the role to assume (format: `arn:aws:iam::<account>:role/<name>`) - shared by TheyDo
+- **External ID** - Required by the role's trust policy for additional security - shared by TheyDo
+
+### S3 Bucket Configuration
+- **Bucket Name** - Target S3 bucket name (e.g., `theydo-ext-dev-eu-west-1`) - shared by TheyDo
+- **Bucket Prefix** - Key prefix/folder path within the bucket where files will be uploaded - shared by TheyDo
 
 ## AWS CLI
 
-### Profile configuration
+### Profile configuration example for static credentials
+You need to know your <aws_access_key_id> and <aws_secret_access_key> to provide in the first step.
+
 ```
 aws configure --profile <source_profile>
 aws configure set region eu-west-1 --profile <source_profile>
