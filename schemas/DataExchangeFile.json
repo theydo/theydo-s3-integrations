@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./DataExchangeFile.json",
+  "anyOf": [
+    {
+      "$ref": "./DataPointFileCes.json"
+    },
+    {
+      "$ref": "./DataPointFileCsat.json"
+    },
+    {
+      "$ref": "./DataPointFileNps.json"
+    },
+    {
+      "$ref": "./DataPointFileOther.json"
+    },
+    {
+      "$ref": "./DataPointFileRatio.json"
+    },
+    {
+      "$ref": "./ProbeFile.json"
+    },
+    {
+      "$ref": "./SolutionsFile.json"
+    },
+    {
+      "$ref": "./InsightsFile.json"
+    },
+    {
+      "$ref": "./MetricsFile.json"
+    }
+  ],
+  "id": "DataExchangeFile"
+}
