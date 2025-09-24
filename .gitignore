@@ -247,6 +247,11 @@ pyrightconfig.json
 pyvenv.cfg
 pip-selfcheck.json
 
+
+### Mamba ###
+# mamba 
+.mamba
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db

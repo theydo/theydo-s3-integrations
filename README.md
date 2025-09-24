@@ -5,7 +5,7 @@ to automatically ingest data from any source application
 as long as it adheres to the specified json schemas.
 
 This repository serves as documentation of:
-- available [schemas](schema/)
+- available [schemas](schemas/)
 - [examples](examples/) and example use cases
 - [aws cli](#aws-cli) commands for necessary configuration
 - a [cli tool](#s3tcli) to test authentication, validate and upload files
@@ -131,7 +131,7 @@ s3tcli test-upload \
   --bucket      theydo-ext-dev-eu-west-1 \
   --prefix      .N2Y1M2siZ2QtOYU3MS05YzUzLWI2OGYtODVkZmU9ZmVlY2Yy. \
   --file        examples/solutions.json \
-  --format      schema/SolutionsFile.schema.json \
+  --format      schemas/SolutionsFile.schema.json \
   --role        arn:aws:iam::830965594115:role/.N2Y1M2siZ2QtOYU3MS05YzUzLWI2OGYtODVkZmU9ZmVlY2Yy. \
   --external-id 1f377dc0-a39a-493a-ae61-a32e9b64d4d7 \
   --profile     kristjan-s3-test \
