@@ -1,4 +1,54 @@
-# S3TCLI
+# TheyoDo x AWS S3
+
+As a TheyDo customer you can setup an S3 integration
+to automatically ingest data from any source application 
+as long as it adheres to the specified json schemas.
+
+This repository serves as documentation of:
+- available [schemas](schemas/)
+- [examples](examples/) and example use cases
+- [aws cli](#aws-cli) commands for necessary configuration
+- a [cli tool](#s3tcli) to test authentication, validate and upload files
+
+## Required Configuration Variables
+
+### AWS Account & Authentication
+- **AWS Account** - your AWS account, share your **account id** with us to get started. If AWS is not yet part of your infrastructure, reach out and we will be able to provide a solution.
+- **AWS Region** - Target region (typically `eu-west-1`) - shared by TheyDo
+- **Role ARN** - The Amazon Resource Name of the role to assume (format: `arn:aws:iam::<account>:role/<name>`) - shared by TheyDo
+- **External ID** - Required by the role's trust policy for additional security - shared by TheyDo
+
+### S3 Bucket Configuration
+- **Bucket Name** - Target S3 bucket name (e.g., `theydo-ext-dev-eu-west-1`) - shared by TheyDo
+- **Bucket Prefix** - Key prefix/folder path within the bucket where files will be uploaded - shared by TheyDo
+
+## AWS CLI
+
+### Profile configuration example for static credentials
+You need to know your <aws_access_key_id> and <aws_secret_access_key> to provide in the first step.
+
+```
+aws configure --profile <source_profile>
+aws configure set region eu-west-1 --profile <source_profile>
+
+aws configure set source_profile <source_profile> --profile <role_profile>
+aws configure set region eu-west-1 --profile <role_profile>
+aws configure set role_arn <role_arn> --profile <role_profile>
+aws configure set external_id <external_id> --profile <role_profile>
+```
+
+### Profile verification
+```
+aws sts get-caller-identity --profile <role_profile>
+```
+
+### Commands
+```
+aws s3 ls s3://<bucket_name>/<bucket_prefix> --summarize --profile jb-test-role
+aws s3 cp <local_file_name> s3://<bucket_name>/<bucket_prefix>/<remote_file_name> --profile <role_profile>
+```
+
+## S3TCLI
 
 A lightweight command‑line helper for:
 
@@ -8,18 +58,20 @@ A lightweight command‑line helper for:
 
 ---
 
-## Quick start
+### Quick start
 
 ```bash
 make            # boots an isolated Python 3.12 env and installs the CLI
 s3tcli --help
 ```
 
+The commands below require the configuration of a profile as described [above](#profile-configuration).
+
 ---
 
-## Commands
+### Commands
 
-### 1) `test-format` — Validate a JSON file
+#### 1) `test-format` — Validate a JSON file
 
 **Arguments**
 
@@ -36,7 +88,7 @@ s3tcli test-format \
 
 ---
 
-### 2) `test-role` — Verify that AssumeRole works
+#### 2) `test-role` — Verify that AssumeRole works
 
 **Arguments**
 
@@ -59,7 +111,7 @@ _On success, the CLI prints the caller identity for the assumed role._
 
 ---
 
-### 3) `test-upload` — Validate then upload to S3
+#### 3) `test-upload` — Validate then upload to S3
 
 **Arguments**
 
@@ -79,7 +131,7 @@ s3tcli test-upload \
   --bucket      theydo-ext-dev-eu-west-1 \
   --prefix      .N2Y1M2siZ2QtOYU3MS05YzUzLWI2OGYtODVkZmU9ZmVlY2Yy. \
   --file        examples/solutions.json \
-  --format      schema/SolutionsFile.schema.json \
+  --format      schemas/SolutionsFile.schema.json \
   --role        arn:aws:iam::830965594115:role/.N2Y1M2siZ2QtOYU3MS05YzUzLWI2OGYtODVkZmU9ZmVlY2Yy. \
   --external-id 1f377dc0-a39a-493a-ae61-a32e9b64d4d7 \
   --profile     kristjan-s3-test \
