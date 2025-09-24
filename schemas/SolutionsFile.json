@@ -111,16 +111,6 @@
                     "type": "null"
                   }
                 ]
-              },
-              "attachments": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
               }
             },
             "required": [
@@ -132,8 +122,7 @@
               "tags",
               "sections",
               "type",
-              "priority",
-              "attachments"
+              "priority"
             ],
             "additionalProperties": false
           }
