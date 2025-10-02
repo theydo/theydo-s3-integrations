@@ -16,7 +16,7 @@ This repository serves as documentation of:
 - **AWS Account** - your AWS account, share your **account id** with us to get started. If AWS is not yet part of your infrastructure, reach out and we will be able to provide a solution.
 - **AWS Region** - Target region (typically `eu-west-1`) - shared by TheyDo
 - **Role ARN** - The Amazon Resource Name of the role to assume (format: `arn:aws:iam::<account>:role/<name>`) - shared by TheyDo
-  - this role allows to 
+  - this role allows an external account to access 'Bucket Name/Bucket Prefix'
 - **External ID** - Required by the role's trust policy for additional security - shared by TheyDo
 
 ### S3 Bucket Configuration
@@ -24,9 +24,8 @@ This repository serves as documentation of:
 - **Bucket Prefix** - Key prefix/folder path within the bucket where files will be uploaded - shared by TheyDo
 
 ### Role permissions
-- on Prefix: [ "s3:DeleteObject", "s3:GetObject", "s3:PutObject", "s3:AbortMultipartUpload", "s3:ListMultipartUploadParts" ]
-- on Bucket: ["s3:ListBucket"]
-This means that tools like [S3 Browser](https://s3browser.com/) will not be successful in connecting to the bucket.
+Role permissions are strictly limited to what is needed to upload files to the bucket prefix.
+This means that tools like [S3 Browser](https://s3browser.com/) will not be successful in connecting to the bucket as they require a bigger permission scope.
 
 ## AWS CLI
 
