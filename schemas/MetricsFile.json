@@ -71,12 +71,24 @@
                           "additionalProperties": false
                         },
                         "dimensions": {
-                          "type": "object",
-                          "propertyNames": {
-                            "type": "string"
-                          },
-                          "additionalProperties": {
-                            "type": "string"
+                          "type": "array",
+                          "items": {
+                            "title": "Dimension",
+                            "description": "Value for one dimension",
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           }
                         }
                       },
@@ -175,12 +187,24 @@
                           "additionalProperties": false
                         },
                         "dimensions": {
-                          "type": "object",
-                          "propertyNames": {
-                            "type": "string"
-                          },
-                          "additionalProperties": {
-                            "type": "string"
+                          "type": "array",
+                          "items": {
+                            "title": "Dimension",
+                            "description": "Value for one dimension",
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           }
                         }
                       },
@@ -267,12 +291,24 @@
                           "additionalProperties": false
                         },
                         "dimensions": {
-                          "type": "object",
-                          "propertyNames": {
-                            "type": "string"
-                          },
-                          "additionalProperties": {
-                            "type": "string"
+                          "type": "array",
+                          "items": {
+                            "title": "Dimension",
+                            "description": "Value for one dimension",
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           }
                         }
                       },
@@ -345,12 +381,24 @@
                           "additionalProperties": false
                         },
                         "dimensions": {
-                          "type": "object",
-                          "propertyNames": {
-                            "type": "string"
-                          },
-                          "additionalProperties": {
-                            "type": "string"
+                          "type": "array",
+                          "items": {
+                            "title": "Dimension",
+                            "description": "Value for one dimension",
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           }
                         }
                       },
@@ -435,12 +483,24 @@
                           "additionalProperties": false
                         },
                         "dimensions": {
-                          "type": "object",
-                          "propertyNames": {
-                            "type": "string"
-                          },
-                          "additionalProperties": {
-                            "type": "string"
+                          "type": "array",
+                          "items": {
+                            "title": "Dimension",
+                            "description": "Value for one dimension",
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           }
                         }
                       },
