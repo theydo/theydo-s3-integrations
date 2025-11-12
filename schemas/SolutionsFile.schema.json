@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./SolutionsFile.schema.json",
+  "title": "SolutionsFile",
+  "description": "JSON import/export for solutions",
+  "examples": [
+    {
+      "format": "THEYDO_SOLUTIONS_V1",
+      "solutions": [
+        {
+          "importKey": "Id-1234",
+          "title": "Some solution"
+        }
+      ]
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "THEYDO_SOLUTIONS_V1"
+    },
+    "solutions": {
+      "title": "Solutions",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Solution"
+      }
+    }
+  },
+  "required": [
+    "format",
+    "solutions"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Solution": {
+      "title": "Solution",
+      "description": "Data for one solution",
+      "type": "object",
+      "properties": {
+        "importKey": {
+          "description": "Unique identifier for solution",
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "description": "Description with MarkDown syntax",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "externalLinks": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tags": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groups": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groupTags": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tagGroup": {
+                    "type": "string"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tagGroup",
+                  "tag"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "priority": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MEDIUM",
+                "LOW"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "importKey",
+        "title"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
