@@ -1,15 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "./SolutionsFile.schema.json",
-  "title": "SolutionsFile",
-  "description": "JSON import/export for solutions",
+  "$id": "./OpportunitiesFile.schema.json",
+  "title": "OpportunitiesFile",
+  "description": "JSON import/export for opportunities",
   "examples": [
     {
-      "format": "THEYDO_SOLUTIONS_V1",
-      "solutions": [
+      "format": "THEYDO_OPPORTUNITIES_V1",
+      "opportunities": [
         {
           "importKey": "Id-1234",
-          "title": "Some solution"
+          "title": "Some opportunity"
         }
       ]
     }
@@ -18,29 +18,29 @@
   "properties": {
     "format": {
       "type": "string",
-      "const": "THEYDO_SOLUTIONS_V1"
+      "const": "THEYDO_OPPORTUNITIES_V1"
     },
-    "solutions": {
-      "title": "Solutions",
+    "opportunities": {
+      "title": "Opportunities",
       "type": "array",
       "items": {
-        "$ref": "#/$defs/Solution"
+        "$ref": "#/$defs/Opportunity"
       }
     }
   },
   "required": [
     "format",
-    "solutions"
+    "opportunities"
   ],
   "additionalProperties": false,
   "$defs": {
-    "Solution": {
-      "title": "Solution",
-      "description": "Data for one solution",
+    "Opportunity": {
+      "title": "Opportunity",
+      "description": "Data for one opportunity",
       "type": "object",
       "properties": {
         "importKey": {
-          "description": "Unique identifier for solution",
+          "description": "Unique identifier for opportunity",
           "type": "string"
         },
         "title": {
@@ -57,6 +57,26 @@
             }
           ]
         },
+        "status": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "externalLinks": {
           "oneOf": [
             {
@@ -64,16 +84,6 @@
               "items": {
                 "type": "string"
               }
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "status": {
-          "oneOf": [
-            {
-              "type": "string"
             },
             {
               "type": "null"
@@ -126,31 +136,6 @@
                 ],
                 "additionalProperties": false
               }
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "type": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "priority": {
-          "oneOf": [
-            {
-              "type": "string",
-              "enum": [
-                "HIGH",
-                "MEDIUM",
-                "LOW"
-              ]
             },
             {
               "type": "null"
