@@ -90,6 +90,81 @@
         "unit": {
           "type": "string"
         },
+        "ownerEmail": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "email",
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetComparisonOperator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LESS_THAN_OR_EQUAL_TO",
+                "MORE_THAN_OR_EQUAL_TO"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groups": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groupTags": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tagGroup": {
+                    "type": "string"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tagGroup",
+                  "tag"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "dataPoints": {
           "type": "array",
           "items": {
@@ -135,6 +210,81 @@
         },
         "unit": {
           "type": "string"
+        },
+        "ownerEmail": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "email",
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetComparisonOperator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LESS_THAN_OR_EQUAL_TO",
+                "MORE_THAN_OR_EQUAL_TO"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groups": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groupTags": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tagGroup": {
+                    "type": "string"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tagGroup",
+                  "tag"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "dataPoints": {
           "type": "array",
@@ -182,6 +332,81 @@
         "unit": {
           "type": "string"
         },
+        "ownerEmail": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "email",
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetComparisonOperator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LESS_THAN_OR_EQUAL_TO",
+                "MORE_THAN_OR_EQUAL_TO"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groups": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groupTags": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tagGroup": {
+                    "type": "string"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tagGroup",
+                  "tag"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "dataPoints": {
           "type": "array",
           "items": {
@@ -227,6 +452,81 @@
         },
         "unit": {
           "type": "string"
+        },
+        "ownerEmail": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "email",
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetComparisonOperator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LESS_THAN_OR_EQUAL_TO",
+                "MORE_THAN_OR_EQUAL_TO"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groups": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groupTags": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tagGroup": {
+                    "type": "string"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tagGroup",
+                  "tag"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "dataPoints": {
           "type": "array",
@@ -283,6 +583,81 @@
         },
         "unit": {
           "type": "string"
+        },
+        "ownerEmail": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "email",
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetComparisonOperator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LESS_THAN_OR_EQUAL_TO",
+                "MORE_THAN_OR_EQUAL_TO"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groups": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "groupTags": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tagGroup": {
+                    "type": "string"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tagGroup",
+                  "tag"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "dataPoints": {
           "type": "array",
@@ -376,7 +751,7 @@
         "dateOfMeasurement": {
           "$ref": "#/$defs/ISODate"
         },
-        "dimension": {
+        "dimensions": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/Dimension"
