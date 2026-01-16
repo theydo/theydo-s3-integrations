@@ -150,3 +150,17 @@ The CLI composes a key like:
 ```
 
 …and prints “Upload successful” on completion.
+
+## Specific Schema Ingestion Rules
+
+### Treatment of `ownerEmail` property
+
+1. If the property is not in the import json
+   a) if the entity exists, owner is left as is
+   b) if the entity does not exist it is created without owner
+2. if the property is 'null' in the import json
+   a) if the entity exists, owner is removed
+   b) if the entity does not exist, it is created without owner
+3. If the property is set in the import json
+   a) the owner is updated to the user it maps to if such user exists in the workspace
+   b) if no such user exists it is treated as not in the json (see 1.)
