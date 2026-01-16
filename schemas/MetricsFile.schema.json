@@ -91,6 +91,7 @@
           "type": "string"
         },
         "ownerEmail": {
+          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
               "type": "string",
@@ -212,6 +213,7 @@
           "type": "string"
         },
         "ownerEmail": {
+          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
               "type": "string",
@@ -333,6 +335,7 @@
           "type": "string"
         },
         "ownerEmail": {
+          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
               "type": "string",
@@ -454,6 +457,7 @@
           "type": "string"
         },
         "ownerEmail": {
+          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
               "type": "string",
@@ -585,6 +589,7 @@
           "type": "string"
         },
         "ownerEmail": {
+          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
               "type": "string",
