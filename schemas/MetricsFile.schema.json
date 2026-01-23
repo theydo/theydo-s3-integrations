@@ -94,9 +94,7 @@
           "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
-              "type": "string",
-              "format": "email",
-              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+              "$ref": "#/$defs/Email"
             },
             {
               "type": "null"
@@ -216,9 +214,7 @@
           "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
-              "type": "string",
-              "format": "email",
-              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+              "$ref": "#/$defs/Email"
             },
             {
               "type": "null"
@@ -338,9 +334,7 @@
           "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
-              "type": "string",
-              "format": "email",
-              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+              "$ref": "#/$defs/Email"
             },
             {
               "type": "null"
@@ -460,9 +454,7 @@
           "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
-              "type": "string",
-              "format": "email",
-              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+              "$ref": "#/$defs/Email"
             },
             {
               "type": "null"
@@ -592,9 +584,7 @@
           "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
           "oneOf": [
             {
-              "type": "string",
-              "format": "email",
-              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+              "$ref": "#/$defs/Email"
             },
             {
               "type": "null"
@@ -819,10 +809,10 @@
           }
         },
         "numerator": {
-          "type": "number"
+          "$ref": "#/$defs/Int"
         },
         "denominator": {
-          "type": "number"
+          "$ref": "#/$defs/Int"
         }
       },
       "required": [
@@ -849,7 +839,7 @@
       "description": "Non-negative integer",
       "type": "integer",
       "minimum": 0,
-      "maximum": 9007199254740991
+      "maximum": 2147483647
     },
     "Dimension": {
       "title": "Dimension",
@@ -868,6 +858,20 @@
         "value"
       ],
       "additionalProperties": false
+    },
+    "Email": {
+      "title": "Email",
+      "description": "Email address",
+      "type": "string",
+      "format": "email",
+      "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+    },
+    "Int": {
+      "title": "Int",
+      "description": "Integer",
+      "type": "integer",
+      "minimum": -2147483648,
+      "maximum": 2147483647
     }
   }
 }
