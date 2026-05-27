@@ -1,4 +1,4 @@
-# TheyoDo x AWS S3
+# TheyDo x AWS S3
 
 As a TheyDo customer you can setup an S3 integration
 to automatically ingest data from any source application 
