@@ -2,7 +2,7 @@
 
 ## Overview
 
-TheyDo's S3 integration provides a **universal connector** that enables customers to upload structured JSON data from virtually any system into their TheyDo workspace. This powerful integration currently supports automated import of three core data types: **Solutions**, **Insights**, and **Metrics**.
+TheyDo's S3 integration provides a **universal connector** that enables customers to upload structured JSON data from virtually any system into their TheyDo workspace. This powerful integration currently supports automated import of these core data types: **Solutions**, **Insights**, **Metrics**, **Survey Responses**, and **Feedback Responses**.
 
 **🚀 Real-World Success**: Our #1 customer Siemens has successfully implemented this integration to connect Polarion, Adlytics, and Adobe Analytics - demonstrating the flexibility to integrate platforms that don't have native TheyDo connectors.
 
@@ -38,6 +38,19 @@ Import structured metrics data with support for:
 - **Time-series Data**: All metrics include date-based measurements
 
 **Use Cases**: Performance dashboard integration, survey data import, KPI tracking
+
+### 4. Survey Responses (`THEYDO_SURVEY_RESPONSES_V1`)
+Import raw survey responses for AI mining into the Data Hub:
+- **Metadata** (`surveyMetadata`): survey name, a stable `surveyId` (dedup/upsert key), and a list of field definitions
+- **Fields**: each has a `fieldId`, `fieldName`, `required` flag, and a `fieldType` (`TEXT`, `TAG_GROUP`, `DATE`, `PERSONA`, `IGNORE`); `TAG_GROUP` fields carry a `tagGroupId`
+- **Responses**: each has a `responseId`, a UTC `responseDateTime` (ISO-8601 ending in `Z`), and `responseFields` that reference declared fields
+
+**Use Cases**: Importing survey platforms' raw responses, consolidating verbatim feedback for mining
+
+### 5. Feedback Responses (`THEYDO_FEEDBACK_RESPONSES_V1`)
+Identical in shape to Survey Responses but for feedback sources, using a `feedbackMetadata` wrapper (`feedbackName`, `feedbackId`, `feedbackFields`).
+
+**Use Cases**: Importing support/feedback channels' raw responses for AI mining
 
 ## Security & Setup
 

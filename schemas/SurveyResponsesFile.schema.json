@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./SurveyResponsesFile.schema.json",
+  "title": "SurveyResponsesFile",
+  "description": "JSON import for survey responses",
+  "examples": [
+    {
+      "format": "THEYDO_SURVEY_RESPONSES_V1",
+      "surveyMetadata": {
+        "surveyName": "Q2 NPS",
+        "surveyId": "survey-q2-nps",
+        "surveyFields": [
+          {
+            "fieldId": "comment",
+            "fieldName": "What can we improve?",
+            "fieldType": "TEXT",
+            "required": true
+          },
+          {
+            "fieldId": "submitted",
+            "fieldName": "Submitted at",
+            "fieldType": "DATE",
+            "required": false
+          }
+        ]
+      },
+      "responses": [
+        {
+          "responseId": "resp-1",
+          "responseDateTime": "2026-01-01T00:00:00Z",
+          "responseFields": [
+            {
+              "fieldId": "comment",
+              "textValue": "Faster onboarding would help."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "THEYDO_SURVEY_RESPONSES_V1"
+    },
+    "surveyMetadata": {
+      "$ref": "#/$defs/SurveyMetadata"
+    },
+    "responses": {
+      "title": "Responses",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Response"
+      }
+    }
+  },
+  "required": [
+    "format",
+    "surveyMetadata",
+    "responses"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "SurveyMetadata": {
+      "title": "SurveyMetadata",
+      "description": "Describes the survey and the shape of its fields",
+      "type": "object",
+      "properties": {
+        "surveyName": {
+          "type": "string"
+        },
+        "surveyId": {
+          "description": "Stable identifier used for dedup/upsert. Re-uploading the same surveyId updates the same data source.",
+          "type": "string"
+        },
+        "surveyFields": {
+          "title": "SurveyFields",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SurveyField"
+          }
+        },
+        "convertAllRowsToQuotes": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "surveyName",
+        "surveyId",
+        "surveyFields"
+      ],
+      "additionalProperties": false
+    },
+    "SurveyField": {
+      "title": "SurveyField",
+      "description": "Definition of one survey field/column",
+      "type": "object",
+      "properties": {
+        "fieldId": {
+          "type": "string"
+        },
+        "fieldName": {
+          "type": "string"
+        },
+        "fieldType": {
+          "$ref": "#/$defs/FieldType"
+        },
+        "tagGroupId": {
+          "description": "Required when fieldType is TAG_GROUP",
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "fieldId",
+        "fieldName",
+        "fieldType",
+        "required"
+      ],
+      "additionalProperties": false
+    },
+    "FieldType": {
+      "title": "FieldType",
+      "description": "How a field's values are interpreted. Defaults to TEXT.",
+      "type": "string",
+      "default": "TEXT",
+      "enum": [
+        "TEXT",
+        "TAG_GROUP",
+        "DATE",
+        "PERSONA",
+        "IGNORE"
+      ]
+    },
+    "Response": {
+      "title": "Response",
+      "description": "A single survey response",
+      "type": "object",
+      "properties": {
+        "responseId": {
+          "type": "string"
+        },
+        "responseDateTime": {
+          "$ref": "#/$defs/ISODateTimeUTC"
+        },
+        "responseFields": {
+          "title": "ResponseFields",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResponseField"
+          }
+        }
+      },
+      "required": [
+        "responseId",
+        "responseDateTime",
+        "responseFields"
+      ],
+      "additionalProperties": false
+    },
+    "ResponseField": {
+      "title": "ResponseField",
+      "description": "One field value within a response",
+      "type": "object",
+      "properties": {
+        "fieldId": {
+          "type": "string"
+        },
+        "textValue": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fieldId",
+        "textValue"
+      ],
+      "additionalProperties": false
+    },
+    "ISODateTimeUTC": {
+      "title": "ISODateTimeUTC",
+      "description": "ISO-8601 date-time in UTC, ending in Z (e.g. 2026-01-01T00:00:00Z). Naive datetimes and numeric offsets are rejected.",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+    }
+  }
+}
