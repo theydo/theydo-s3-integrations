@@ -172,12 +172,16 @@ Two formats import raw survey/feedback responses for AI mining:
 - `THEYDO_SURVEY_RESPONSES_V1` — schema [`schemas/SurveyResponsesFile.schema.json`](schemas/SurveyResponsesFile.schema.json), example [`examples/survey_responses.json`](examples/survey_responses.json). Uses a `surveyMetadata` wrapper (`surveyName`, `surveyId`, `surveyFields`).
 - `THEYDO_FEEDBACK_RESPONSES_V1` — schema [`schemas/FeedbackResponsesFile.schema.json`](schemas/FeedbackResponsesFile.schema.json), example [`examples/feedback_responses.json`](examples/feedback_responses.json). Uses a `feedbackMetadata` wrapper (`feedbackName`, `feedbackId`, `feedbackFields`).
 
-The two formats are otherwise identical. Each declares its fields up front and then lists responses whose values reference those fields. Rules enforced by `test-format` (beyond the JSON Schema):
+The two formats are otherwise identical. Each declares its fields up front and then lists responses whose values reference those fields.
 
-1. `surveyId` / `feedbackId` is a stable dedup/upsert key — re-uploading the same id updates the same data source.
+`surveyId` / `feedbackId` is a stable dedup/upsert key — re-uploading the same id updates the same data source. It is not validated; it just affects how the upload is applied.
+
+`test-format` enforces the following. Rules 1–2 come from the JSON Schema itself; rules 3–5 are cross-field checks that JSON Schema cannot express:
+
+1. The structure, required keys, and types declared in the schema, including that `format` matches the file's format const.
 2. `responseDateTime` must be ISO-8601 in UTC ending in `Z` (e.g. `2026-01-01T00:00:00Z`). Naive datetimes and numeric offsets (e.g. `+02:00`) are rejected — convert to UTC.
-3. `tagGroupId` is required on any field whose `fieldType` is `TAG_GROUP`.
-4. At most one field may be `fieldType: PERSONA`, and at most one may be `fieldType: DATE`.
+3. `fieldName` must be non-empty on every field.
+4. `tagGroupId` is required on any field whose `fieldType` is `TAG_GROUP`; at most one field may be `fieldType: PERSONA`, and at most one may be `fieldType: DATE`.
 5. Every `responses[].responseFields[].fieldId` must reference a `fieldId` declared in the metadata fields.
 
 `fieldType` is one of `TEXT`, `TAG_GROUP`, `DATE`, `PERSONA`, `IGNORE`.
