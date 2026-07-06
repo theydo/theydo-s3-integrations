@@ -1,0 +1,258 @@
+{
+  "format": "THEYDO_METRICS_V1",
+  "metrics": [
+    {
+      "type": "CES",
+      "importKey": "CES",
+      "title": "Customer Effort Score",
+      "description": "Measures how much effort customers had to put in to get their issue resolved.",
+      "unit": "score",
+      "ownerEmail": "cx-team@example.com",
+      "target": 5.5,
+      "targetComparisonOperator": "LESS_THAN_OR_EQUAL_TO",
+      "groups": ["Customer Experience"],
+      "groupTags": [
+        { "tagGroup": "Channel", "tag": "Support" }
+      ],
+      "dataPoints": [
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "score": 4.8,
+          "respondents": 320,
+          "dimensions": [
+            { "key": "region", "value": "APAC" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "score": 5.1,
+          "respondents": 295,
+          "dimensions": [
+            { "key": "region", "value": "EMEA" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "score": 4.8,
+          "respondents": 315,
+          "dimensions": [
+            { "key": "region", "value": "APAC" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "score": 5.1,
+          "respondents": 305,
+          "dimensions": [
+            { "key": "region", "value": "EMEA" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "CSAT",
+      "importKey": "CSAT",
+      "title": "Customer Satisfaction Score",
+      "description": "Overall satisfaction rating collected after support interactions.",
+      "unit": "responses",
+      "ownerEmail": "cx-team@example.com",
+      "target": 80,
+      "targetComparisonOperator": "MORE_THAN_OR_EQUAL_TO",
+      "groups": ["Customer Experience"],
+      "groupTags": [
+        { "tagGroup": "Channel", "tag": "Support" }
+      ],
+      "dataPoints": [
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "veryUnsatisfied": 12,
+          "unsatisfied": 28,
+          "neutral": 45,
+          "satisfied": 180,
+          "verySatisfied": 95,
+          "dimensions": [
+            { "key": "region", "value": "EMEA" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "veryUnsatisfied": 8,
+          "unsatisfied": 21,
+          "neutral": 38,
+          "satisfied": 195,
+          "verySatisfied": 110,
+          "dimensions": [
+            { "key": "region", "value": "APAC" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "veryUnsatisfied": 15,
+          "unsatisfied": 23,
+          "neutral": 45,
+          "satisfied": 171,
+          "verySatisfied": 91,
+          "dimensions": [
+            { "key": "region", "value": "EMEA" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "veryUnsatisfied": 5,
+          "unsatisfied": 29,
+          "neutral": 33,
+          "satisfied": 210,
+          "verySatisfied": 91,
+          "dimensions": [
+            { "key": "region", "value": "APAC" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "NPS",
+      "importKey": "NPS",
+      "title": "Net Promoter Score",
+      "description": "Likelihood of customers recommending the product to others.",
+      "unit": "responses",
+      "ownerEmail": "cx-team@example.com",
+      "target": 40,
+      "targetComparisonOperator": "MORE_THAN_OR_EQUAL_TO",
+      "groups": ["Customer Experience"],
+      "groupTags": [
+        { "tagGroup": "Channel", "tag": "Product" }
+      ],
+      "dataPoints": [
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "detractors": 42,
+          "passives": 88,
+          "promoters": 230,
+          "dimensions": [
+            { "key": "segment", "value": "SMB" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "detractors": 35,
+          "passives": 79,
+          "promoters": 256,
+          "dimensions": [
+            { "key": "segment", "value": "Enterprise" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "detractors": 39,
+          "passives": 81,
+          "promoters": 245,
+          "dimensions": [
+            { "key": "segment", "value": "SMB" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "detractors": 41,
+          "passives": 73,
+          "promoters": 250,
+          "dimensions": [
+            { "key": "segment", "value": "Enterprise" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "OTHER",
+      "importKey": "OTHER",
+      "title": "Average Handle Time",
+      "description": "Average time (in seconds) agents spend on each support ticket.",
+      "unit": "seconds",
+      "ownerEmail": "ops-team@example.com",
+      "aggregationMethod": "AVERAGE",
+      "target": 300,
+      "targetComparisonOperator": "LESS_THAN_OR_EQUAL_TO",
+      "groups": ["Operations"],
+      "groupTags": [
+        { "tagGroup": "Team", "tag": "Tier 1 Support" }
+      ],
+      "dataPoints": [
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "value": 312.5,
+          "dimensions": [
+            { "key": "team", "value": "Tier 2" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "value": 287.0,
+          "dimensions": [
+            { "key": "team", "value": "Tier 1" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "value": 322.3,
+          "dimensions": [
+            { "key": "team", "value": "Tier 2" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "value": 281.3,
+          "dimensions": [
+            { "key": "team", "value": "Tier 1" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "RATIO",
+      "importKey": "RATIO",
+      "title": "First Contact Resolution Rate",
+      "description": "Proportion of support cases resolved on the first contact.",
+      "unit": "cases",
+      "ownerEmail": "cx-team@example.com",
+      "target": 75,
+      "targetComparisonOperator": "MORE_THAN_OR_EQUAL_TO",
+      "groups": ["Customer Experience"],
+      "groupTags": [
+        { "tagGroup": "Channel", "tag": "Support" }
+      ],
+      "dataPoints": [
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "numerator": 740,
+          "denominator": 1000,
+          "dimensions": [
+            { "key": "region", "value": "EMEA" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-01-31",
+          "numerator": 812,
+          "denominator": 1050,
+          "dimensions": [
+            { "key": "region", "value": "AMER" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "numerator": 788,
+          "denominator": 1000,
+          "dimensions": [
+            { "key": "region", "value": "EMEA" }
+          ]
+        },
+        {
+          "dateOfMeasurement": "2025-02-28",
+          "numerator": 812,
+          "denominator": 1050,
+          "dimensions": [
+            { "key": "region", "value": "AMER" }
+          ]
+        }
+      ]
+    }
+  ]
+}
