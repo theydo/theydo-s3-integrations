@@ -1,58 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "./FeedbackResponsesFile.schema.json",
-  "title": "FeedbackResponsesFile",
-  "description": "JSON import for feedback responses",
-  "examples": [
-    {
-      "format": "THEYDO_FEEDBACK_RESPONSES_V1",
-      "feedbackMetadata": {
-        "feedbackName": "Support Feedback",
-        "feedbackId": "feedback-support",
-        "feedbackFields": [
-          {
-            "fieldId": "comment",
-            "fieldName": "Tell us more",
-            "fieldType": "TEXT",
-            "required": true
-          },
-          {
-            "fieldId": "submitted",
-            "fieldName": "Submitted at",
-            "fieldType": "DATE",
-            "required": false
-          }
-        ]
-      },
-      "responses": [
-        {
-          "responseId": "resp-1",
-          "responseDateTime": "2026-01-01T00:00:00Z",
-          "responseFields": [
-            {
-              "fieldId": "comment",
-              "textValue": "The agent resolved my issue quickly."
-            }
-          ]
-        }
-      ]
-    }
-  ],
   "type": "object",
   "properties": {
     "format": {
-      "type": "string",
-      "const": "THEYDO_FEEDBACK_RESPONSES_V1"
+      "$ref": "#/$defs/schema0"
     },
     "feedbackMetadata": {
-      "$ref": "#/$defs/FeedbackMetadata"
+      "$ref": "#/$defs/schema1"
     },
     "responses": {
-      "title": "Responses",
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/Response"
-      }
+      "$ref": "#/$defs/schema11"
     }
   },
   "required": [
@@ -61,28 +19,27 @@
     "responses"
   ],
   "additionalProperties": false,
+  "title": "FeedbackResponsesFile",
+  "description": "JSON import for feedback responses",
   "$defs": {
-    "FeedbackMetadata": {
-      "title": "FeedbackMetadata",
-      "description": "Describes the feedback source and the shape of its fields",
+    "schema0": {
+      "type": "string",
+      "const": "THEYDO_FEEDBACK_RESPONSES_V1"
+    },
+    "schema1": {
       "type": "object",
       "properties": {
         "feedbackName": {
-          "type": "string"
+          "$ref": "#/$defs/schema2"
         },
         "feedbackId": {
-          "description": "Stable identifier used for dedup/upsert. Re-uploading the same feedbackId updates the same data source.",
-          "type": "string"
+          "$ref": "#/$defs/schema3"
         },
         "feedbackFields": {
-          "title": "FeedbackFields",
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/FeedbackField"
-          }
+          "$ref": "#/$defs/schema4"
         },
         "convertAllRowsToQuotes": {
-          "type": "boolean"
+          "$ref": "#/$defs/schema10"
         }
       },
       "required": [
@@ -92,41 +49,51 @@
       ],
       "additionalProperties": false
     },
-    "FeedbackField": {
-      "title": "FeedbackField",
-      "description": "Definition of one feedback field/column",
-      "type": "object",
-      "properties": {
-        "fieldId": {
-          "type": "string"
-        },
-        "fieldName": {
-          "type": "string"
-        },
-        "fieldType": {
-          "$ref": "#/$defs/FieldType"
-        },
-        "tagGroupId": {
-          "description": "Required when fieldType is TAG_GROUP",
-          "type": "string"
-        },
-        "required": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "fieldId",
-        "fieldName",
-        "fieldType",
-        "required"
-      ],
-      "additionalProperties": false
+    "schema2": {
+      "type": "string"
     },
-    "FieldType": {
-      "title": "FieldType",
-      "description": "How a field's values are interpreted. Defaults to TEXT.",
+    "schema3": {
+      "type": "string"
+    },
+    "schema4": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fieldId": {
+            "$ref": "#/$defs/schema5"
+          },
+          "fieldName": {
+            "$ref": "#/$defs/schema6"
+          },
+          "fieldType": {
+            "$ref": "#/$defs/schema7"
+          },
+          "tagGroupTitle": {
+            "$ref": "#/$defs/schema8"
+          },
+          "required": {
+            "$ref": "#/$defs/schema9"
+          }
+        },
+        "required": [
+          "fieldId",
+          "fieldName",
+          "required"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "schema5": {
+      "type": "string"
+    },
+    "schema6": {
       "type": "string",
+      "minLength": 1
+    },
+    "schema7": {
       "default": "TEXT",
+      "type": "string",
       "enum": [
         "TEXT",
         "TAG_GROUP",
@@ -135,56 +102,57 @@
         "IGNORE"
       ]
     },
-    "Response": {
-      "title": "Response",
-      "description": "A single feedback response",
-      "type": "object",
-      "properties": {
-        "responseId": {
-          "type": "string"
-        },
-        "responseDateTime": {
-          "$ref": "#/$defs/ISODateTimeUTC"
-        },
-        "responseFields": {
-          "title": "ResponseFields",
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ResponseField"
-          }
-        }
-      },
-      "required": [
-        "responseId",
-        "responseDateTime",
-        "responseFields"
-      ],
-      "additionalProperties": false
-    },
-    "ResponseField": {
-      "title": "ResponseField",
-      "description": "One field value within a response",
-      "type": "object",
-      "properties": {
-        "fieldId": {
-          "type": "string"
-        },
-        "textValue": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "fieldId",
-        "textValue"
-      ],
-      "additionalProperties": false
-    },
-    "ISODateTimeUTC": {
-      "title": "ISODateTimeUTC",
-      "description": "ISO-8601 date-time in UTC, ending in Z (e.g. 2026-01-01T00:00:00Z). Naive datetimes and numeric offsets are rejected.",
+    "schema8": {
       "type": "string",
-      "format": "date-time",
-      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "schema9": {
+      "type": "boolean"
+    },
+    "schema10": {
+      "type": "boolean"
+    },
+    "schema11": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "responseId": {
+            "type": "string"
+          },
+          "responseDateTime": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "responseFields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fieldId": {
+                  "type": "string"
+                },
+                "textValue": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "fieldId",
+                "textValue"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "responseId",
+          "responseDateTime",
+          "responseFields"
+        ],
+        "additionalProperties": false
+      }
     }
   }
 }

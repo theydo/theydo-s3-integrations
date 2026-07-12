@@ -15,7 +15,7 @@
         "fieldId": "channel",
         "fieldName": "Channel",
         "fieldType": "TAG_GROUP",
-        "tagGroupId": "tg-channel",
+        "tagGroupTitle": "Channel",
         "required": false
       },
       {
@@ -39,9 +39,7 @@
     {
       "responseId": "resp-2",
       "responseDateTime": "2026-01-03T18:30:00Z",
-      "responseFields": [
-        { "fieldId": "comment", "textValue": "Wait time was a bit long." }
-      ]
+      "responseFields": [{ "fieldId": "comment", "textValue": "Wait time was a bit long." }]
     }
   ]
 }

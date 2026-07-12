@@ -1,10 +1,11 @@
 # TheyDo x AWS S3
 
 As a TheyDo customer you can setup an S3 integration
-to automatically ingest data from any source application 
+to automatically ingest data from any source application
 as long as it adheres to the specified json schemas.
 
 This repository serves as documentation of:
+
 - available [schemas](schemas/)
 - [examples](examples/) and example use cases
 - [aws cli](#aws-cli) commands for necessary configuration
@@ -13,23 +14,27 @@ This repository serves as documentation of:
 ## Required Configuration Variables
 
 ### AWS Account & Authentication
+
 - **AWS Account** - your AWS account, share your **account id** with us to get started. If AWS is not yet part of your infrastructure, reach out and we will be able to provide a solution.
 - **AWS Region** - Target region (typically `eu-west-1`) - shared by TheyDo
 - **Role ARN** - The Amazon Resource Name of the role to assume (format: `arn:aws:iam::<account>:role/<name>`) - shared by TheyDo
-  - this role allows an external account to access 'Bucket Name/Bucket Prefix'
+    - this role allows an external account to access 'Bucket Name/Bucket Prefix'
 - **External ID** - Required by the role's trust policy for additional security - shared by TheyDo
 
 ### S3 Bucket Configuration
+
 - **Bucket Name** - Target S3 bucket name (e.g., `theydo-ext-dev-eu-west-1`) - shared by TheyDo
 - **Bucket Prefix** - Key prefix/folder path within the bucket where files will be uploaded - shared by TheyDo
 
 ### Role permissions
+
 Role permissions are strictly limited to what is needed to upload files to the bucket prefix.
 This means that tools like [S3 Browser](https://s3browser.com/) will not be successful in connecting to the bucket as they require a bigger permission scope.
 
 ## AWS CLI
 
 ### Profile configuration example for static credentials
+
 You need to know your <aws_access_key_id> and <aws_secret_access_key> to provide in the first step.
 
 ```
@@ -43,11 +48,13 @@ aws configure set external_id <external_id> --profile <role_profile>
 ```
 
 ### Profile verification
+
 ```
 aws sts get-caller-identity --profile <role_profile>
 ```
 
 ### Commands
+
 ```
 aws s3 ls s3://<bucket_name>/<bucket_prefix> --summarize --profile jb-test-role
 aws s3 cp <local_file_name> s3://<bucket_name>/<bucket_prefix>/<remote_file_name> --profile <role_profile>
@@ -176,13 +183,14 @@ The two formats are otherwise identical. Each declares its fields up front and t
 
 `surveyId` / `feedbackId` is a stable dedup/upsert key — re-uploading the same id updates the same data source. It is not validated; it just affects how the upload is applied.
 
-`test-format` enforces the following. Rules 1–2 come from the JSON Schema itself; rules 3–5 are cross-field checks that JSON Schema cannot express:
+`test-format` enforces the following. Rules 1–2 come from the JSON Schema itself; rules 3–6 are cross-field checks that JSON Schema cannot express:
 
 1. The structure, required keys, and types declared in the schema, including that `format` matches the file's format const.
 2. `responseDateTime` must be ISO-8601 in UTC ending in `Z` (e.g. `2026-01-01T00:00:00Z`). Naive datetimes and numeric offsets (e.g. `+02:00`) are rejected — convert to UTC.
 3. `fieldName` must be non-empty on every field.
-4. `tagGroupId` is required on any field whose `fieldType` is `TAG_GROUP`; at most one field may be `fieldType: PERSONA`, and at most one may be `fieldType: DATE`.
-5. Every `responses[].responseFields[].fieldId` must reference a `fieldId` declared in the metadata fields.
+4. `tagGroupTitle` is required on any field whose `fieldType` is `TAG_GROUP`, and must match the name of an existing TheyDo tag group (case-insensitive) — a title that doesn't match falls back to `IGNORE`; at most one field may be `fieldType: PERSONA`, and at most one may be `fieldType: DATE`.
+5. Every field's `fieldId` must be unique within the metadata; a duplicate is rejected.
+6. Every `responses[].responseFields[].fieldId` must reference a `fieldId` declared in the metadata fields.
 
 `fieldType` is one of `TEXT`, `TAG_GROUP`, `DATE`, `PERSONA`, `IGNORE`.
 

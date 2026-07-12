@@ -24,18 +24,23 @@ def _run_extra_checks(data: object) -> None:
 
 def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> None:
     fields = data.get(metadata_key, {}).get(fields_key, [])
-    declared_ids = {f.get("fieldId") for f in fields}
 
+    seen_ids: set = set()
     persona = date = 0
     for f in fields:
+        field_id = f.get("fieldId")
+        if field_id in seen_ids:
+            raise ValueError(f"Duplicate fieldId in metadata: {field_id}")
+        seen_ids.add(field_id)
+
         # fieldType defaults to TEXT when omitted (mirrors the consumer).
         field_type = f.get("fieldType", "TEXT")
         # Column headers cannot be empty (consumer: validateAiDataSourceMetadata).
         if not f.get("fieldName"):
             raise ValueError("Column headers cannot be empty")
-        if field_type == "TAG_GROUP" and not f.get("tagGroupId"):
+        if field_type == "TAG_GROUP" and not f.get("tagGroupTitle"):
             raise ValueError(
-                "Column with type TAG_GROUP needs to have tagGroupId assigned"
+                "Column with type TAG_GROUP needs to have tagGroupTitle assigned"
             )
         if field_type == "PERSONA":
             persona += 1
@@ -49,7 +54,7 @@ def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> Non
 
     for r in data.get("responses", []):
         for rf in r.get("responseFields", []):
-            if rf.get("fieldId") not in declared_ids:
+            if rf.get("fieldId") not in seen_ids:
                 raise ValueError(
                     f"Response '{r.get('responseId')}' references unknown "
                     f"fieldId '{rf.get('fieldId')}'"
