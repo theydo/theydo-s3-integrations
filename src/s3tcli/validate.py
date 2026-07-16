@@ -26,7 +26,7 @@ def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> Non
     fields = data.get(metadata_key, {}).get(fields_key, [])
 
     seen_ids: set = set()
-    persona = date = 0
+    persona = 0
     for f in fields:
         field_id = f.get("fieldId")
         if field_id in seen_ids:
@@ -44,18 +44,19 @@ def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> Non
             )
         if field_type == "PERSONA":
             persona += 1
-        elif field_type == "DATE":
-            date += 1
 
     if persona > 1:
         raise ValueError("There can be only one column assigned to PERSONA type")
-    if date > 1:
-        raise ValueError("There can be only one column assigned to DATE type")
 
     for r in data.get("responses", []):
+        seen_response_field_ids: set = set()
         for rf in r.get("responseFields", []):
-            if rf.get("fieldId") not in seen_ids:
+            field_id = rf.get("fieldId")
+            if field_id not in seen_ids:
                 raise ValueError(
                     f"Response '{r.get('responseId')}' references unknown "
-                    f"fieldId '{rf.get('fieldId')}'"
+                    f"fieldId '{field_id}'"
                 )
+            if field_id in seen_response_field_ids:
+                raise ValueError(f"Duplicate fieldId in responseFields: {field_id}")
+            seen_response_field_ids.add(field_id)

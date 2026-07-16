@@ -17,12 +17,6 @@
         "fieldType": "TAG_GROUP",
         "tagGroupTitle": "Channel",
         "required": false
-      },
-      {
-        "fieldId": "submitted",
-        "fieldName": "Submitted at",
-        "fieldType": "DATE",
-        "required": false
       }
     ]
   },
@@ -32,8 +26,7 @@
       "responseDateTime": "2026-01-01T09:15:30Z",
       "responseFields": [
         { "fieldId": "comment", "textValue": "The agent resolved my issue quickly." },
-        { "fieldId": "channel", "textValue": "Email" },
-        { "fieldId": "submitted", "textValue": "2026-01-01T09:15:30Z" }
+        { "fieldId": "channel", "textValue": "Email" }
       ]
     },
     {

@@ -51,7 +51,7 @@ Import structured metrics data with support for:
 Import raw survey responses for AI mining into the Data Hub:
 
 - **Metadata** (`surveyMetadata`): survey name, a stable `surveyId` (dedup/upsert key), and a list of field definitions
-- **Fields**: each has a unique `fieldId`, `fieldName`, `required` flag, and a `fieldType` (`TEXT`, `TAG_GROUP`, `DATE`, `PERSONA`, `IGNORE`, defaults to `TEXT`); `TAG_GROUP` fields carry a `tagGroupTitle` matching an existing tag group name
+- **Fields**: each has a unique `fieldId`, `fieldName`, `required` flag, and a `fieldType` (`TEXT`, `TAG_GROUP`, `PERSONA`, `IGNORE`, defaults to `TEXT`); `TAG_GROUP` fields carry a `tagGroupTitle` matching an existing tag group name
 - **Responses**: each has a `responseId`, a UTC `responseDateTime` (ISO-8601 ending in `Z`), and `responseFields` that reference declared fields
 
 **Use Cases**: Importing survey platforms' raw responses, consolidating verbatim feedback for mining
