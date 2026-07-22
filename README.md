@@ -188,7 +188,7 @@ The two formats are otherwise identical. Each declares its fields up front and t
 1. The structure, required keys, and types declared in the schema, including that `format` matches the file's format const.
 2. `responseDateTime` must be ISO-8601 in UTC ending in `Z` (e.g. `2026-01-01T00:00:00Z`). Naive datetimes and numeric offsets (e.g. `+02:00`) are rejected — convert to UTC.
 3. `fieldName` must be non-empty on every field.
-4. `tagGroupTitle` is required on any field whose `fieldType` is `TAG_GROUP`, and must match the name of an existing TheyDo tag group (case-insensitive) — a title that doesn't match falls back to `IGNORE`; at most one field may be `fieldType: PERSONA`.
+4. `tagGroupTitle` is required on any field whose `fieldType` is `TAG_GROUP`. It's matched against existing tag groups case-insensitively; if no tag group with that title exists yet in the workspace, one is created automatically — a typo in `tagGroupTitle` creates a stray tag group rather than being ignored. At most one field may be `fieldType: PERSONA`.
 5. Every field's `fieldId` must be unique within the metadata; a duplicate is rejected.
 6. Every `responses[].responseFields[].fieldId` must reference a `fieldId` declared in the metadata fields.
 7. Every `responses[].responseFields[].fieldId` must be unique within its response; a duplicate is rejected.
