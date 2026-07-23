@@ -2,11 +2,12 @@
 
 ## Overview
 
-TheyDo's S3 integration provides a **universal connector** that enables customers to upload structured JSON data from virtually any system into their TheyDo workspace. This powerful integration currently supports automated import of three core data types: **Solutions**, **Insights**, and **Metrics**.
+TheyDo's S3 integration provides a **universal connector** that enables customers to upload structured JSON data from virtually any system into their TheyDo workspace. This powerful integration currently supports automated import of these core data types: **Solutions**, **Insights**, **Metrics**, **Survey Responses**, and **Feedback Responses**.
 
 **🚀 Real-World Success**: Our #1 customer Siemens has successfully implemented this integration to connect Polarion, Adlytics, and Adobe Analytics - demonstrating the flexibility to integrate platforms that don't have native TheyDo connectors.
 
 ### Key Benefits
+
 - **Universal Data Ingestion**: Connect any system that can export JSON files
 - **Rapid Implementation**: Setup completed in days/hours, not weeks
 - **Data Validation**: Built-in schema validation ensures data integrity before import
@@ -16,21 +17,27 @@ TheyDo's S3 integration provides a **universal connector** that enables customer
 ## Supported Data Types
 
 ### 1. Solutions (`THEYDO_SOLUTIONS_V1`)
+
 Import solution data including:
+
 - **Required**: Unique identifier, title
 - **Optional**: Descriptions (Markdown support), external links, status, tags, groups, type, priority levels
 
 **Use Cases**: Importing existing solution libraries, migrating from other platforms, bulk solution updates
 
-### 2. Insights (`THEYDO_INSIGHTS_V1`) 
+### 2. Insights (`THEYDO_INSIGHTS_V1`)
+
 Import customer insights including:
+
 - **Required**: Unique identifier, title
 - **Optional**: Descriptions (Markdown support), icons, empathy scores, external links, types, status, tags, groups, weights
 
 **Use Cases**: Research data import, customer feedback integration, insight consolidation
 
 ### 3. Metrics (`THEYDO_METRICS_V1`)
+
 Import structured metrics data with support for:
+
 - **CES (Customer Effort Score)**: Score-based measurements with respondent counts
 - **CSAT (Customer Satisfaction)**: Five-point satisfaction scale measurements
 - **NPS (Net Promoter Score)**: Promoter/passive/detractor classifications
@@ -39,32 +46,58 @@ Import structured metrics data with support for:
 
 **Use Cases**: Performance dashboard integration, survey data import, KPI tracking
 
+### 4. Survey Responses (`THEYDO_SURVEY_RESPONSES_V1`)
+
+Import raw survey responses for AI mining into the Data Hub:
+
+- **Metadata** (`surveyMetadata`): survey name, a stable `surveyId` (dedup/upsert key), a list of field definitions, and an optional `convertAllRowsToQuotes` flag
+- **Fields**: each has a unique `fieldId`, `fieldName`, `required` flag, and a `fieldType` (`TEXT`, `TAG_GROUP`, `PERSONA`, `IGNORE`, defaults to `TEXT`)
+  - `TAG_GROUP` fields carry a `tagGroupTitle` — the name of the tag group (a named category of tags, e.g. "Sentiment") that each response's value should be coded into. Matched case-insensitively against existing tag groups in the workspace, and auto-created if no match is found
+  - At most one field may be `PERSONA` — its value is given to TheyDo's AI, together with the workspace's existing personas, as a hint for which persona each response's quote should be linked to. Unlike `TAG_GROUP`, this is a best-effort AI match against existing personas, not an exact/deterministic lookup, and no new persona is created if there's no good match
+- **Responses**: each has a `responseId`, a UTC `responseDateTime` (ISO-8601 ending in `Z`), and `responseFields` that reference declared fields
+- **`convertAllRowsToQuotes`**: by default, TheyDo's AI reads each response and decides how many quotes (if any) to extract from it — ideal for long free-text answers. Set this to `true` to skip that step and import every response row as one verbatim quote instead — ideal when each response is already a short, atomic answer
+
+**Use Cases**: Importing survey platforms' raw responses, consolidating verbatim feedback for mining
+
+### 5. Feedback Responses (`THEYDO_FEEDBACK_RESPONSES_V1`)
+
+Identical in shape to Survey Responses but for feedback sources, using a `feedbackMetadata` wrapper (`feedbackName`, `feedbackId`, `feedbackFields`).
+
+**Use Cases**: Importing support/feedback channels' raw responses for AI mining
+
 ## Security & Setup
 
 ### Enterprise Security Architecture
+
 TheyDo uses a **dedicated AWS account** specifically for external integrations, ensuring complete isolation from production systems. Each customer receives their own IAM role with permissions scoped only to their designated S3 prefix.
 
 ### Recommended Approach: IAM Role (Preferred)
-**Customer Provides**: 
+
+**Customer Provides**:
+
 - AWS Account ID
 - External ID (for secure role assumption)
 
-**TheyDo Configures**: 
+**TheyDo Configures**:
+
 - Dedicated IAM role with minimal required permissions
 - Unique S3 prefix for customer data isolation
 - Permission boundary policies for additional security
 
-**Benefits**: 
+**Benefits**:
+
 - **Zero Credential Management**: No keys to store, rotate, or secure
 - **Enhanced Security**: Temporary credentials with automatic expiration
 - **AWS Best Practices**: Follows enterprise security standards
 - **Audit Trail**: Complete CloudTrail logging of all access
 
 ### Alternative: Static Credentials (Not Recommended)
+
 **Available When**: Customer compliance requirements mandate static credentials  
 **Note**: Requires periodic credential rotation and additional security overhead
 
 ### What TheyDo Handles
+
 - **Infrastructure Setup**: Dedicated S3 bucket and IAM configuration
 - **Security Implementation**: Role creation with permission boundaries
 - **Data Validation**: Schema enforcement and error reporting
@@ -75,16 +108,19 @@ TheyDo uses a **dedicated AWS account** specifically for external integrations, 
 The S3TCLI tool provides three main commands:
 
 ### 1. Data Validation (`test-format`)
+
 - Validates JSON files against TheyDo schemas
 - Ensures data compatibility before upload
 - Provides clear error messages for data issues
 
 ### 2. Connection Testing (`test-role`)
+
 - Verifies AWS credential configuration
 - Tests IAM role assumption process
 - Confirms connectivity to AWS services
 
 ### 3. Upload & Validation (`test-upload`)
+
 - Combines validation and upload in one step
 - Generates unique file keys with timestamps
 - Provides upload confirmation
@@ -92,36 +128,42 @@ The S3TCLI tool provides three main commands:
 ## Customer Requirements
 
 ### Technical Prerequisites
+
 - AWS Account (for IAM role setup)
 - Basic command-line familiarity
 - JSON data formatted according to TheyDo schemas
 
 ### Setup Process
+
 1. **Initial Contact**: Customer expresses interest in S3 integration
 2. **Requirements Gathering**: Customer provides AWS Account ID and External ID
 3. **TheyDo Configuration**: Engineering team creates dedicated IAM role and S3 prefix (1-2 business days)
 4. **Credentials Delivery**: TheyDo provides:
-   - IAM Role ARN for assumption
-   - S3 bucket name and unique prefix
-   - External ID for secure authentication
+    - IAM Role ARN for assumption
+    - S3 bucket name and unique prefix
+    - External ID for secure authentication
 5. **Customer Testing**: Download CLI tool and validate connection
 6. **Data Mapping**: Customer maps their data to TheyDo schemas using provided templates
 7. **Go-Live**: Customer implements automated data uploads
 
 ### Proven Implementation Timeline
+
 Based on real customer implementations:
+
 - **Setup & Configuration**: 1-2 business days (TheyDo side)
 - **Customer Integration**: Hours to days (depending on data complexity)
 - **Total Time to Go-Live**: 2-5 business days
 
-**Success Story**: "The basic implementation of pushing any data to TheyDo using S3 is matter of days if not hours" - *Jaanus Kivistik, Head of Engineering*
+**Success Story**: "The basic implementation of pushing any data to TheyDo using S3 is matter of days if not hours" - _Jaanus Kivistik, Head of Engineering_
 
 ## Real Customer Success Stories
 
 ### 🏭 Siemens: Multi-Platform Integration
+
 **Challenge**: Connect Polarion (requirements management), Adlytics, and Adobe Analytics to TheyDo
 **Solution**: Custom S3 integration for each platform
-**Results**: 
+**Results**:
+
 - Successful data flow from 3 previously unconnected systems
 - Became TheyDo's #1 customer during implementation
 - Demonstrates S3 integration's flexibility for any platform
@@ -129,21 +171,27 @@ Based on real customer implementations:
 **Implementation**: Siemens developed custom exporters for each platform that format data according to TheyDo schemas and upload via S3
 
 ### 📊 Generic Survey Data Integration
-*"Customer with monthly NPS/CSAT surveys wanting automated reporting"*
+
+_"Customer with monthly NPS/CSAT surveys wanting automated reporting"_
+
 - Export survey results to JSON format matching TheyDo metrics schemas
 - Supports all major survey types: CES, CSAT, NPS, custom metrics
 - Configure automated upload pipeline with timestamp-based file naming
 - Monitor metrics in TheyDo dashboards with full historical data
 
 ### 🔄 Legacy Platform Migration
-*"Enterprise customer migrating from legacy CX platform"*
+
+_"Enterprise customer migrating from legacy CX platform"_
+
 - Bulk export of 500+ solutions and 1000+ insights
 - Data validation ensures clean import without errors
 - Batch processing with progress tracking
 - Complete historical data preservation in TheyDo
 
 ### 🛠️ Internal Tool Integration
+
 **Real Example**: TheyDo's internal Linear integration
+
 - Automatically syncs Linear projects and tickets as TheyDo solutions
 - Built in ~30 minutes using existing S3 infrastructure
 - Demonstrates rapid prototyping capabilities for custom integrations
@@ -160,7 +208,9 @@ Based on real customer implementations:
 - **Cost-Effective**: Eliminates need for expensive custom API development
 
 ### Target Customer Profile
+
 **Ideal Fit**: Companies with engineering resources and complex tool ecosystems
+
 - Large enterprises with custom/legacy systems
 - Organizations using platforms without native TheyDo connectors
 - Teams requiring high security standards and audit compliance
@@ -189,6 +239,7 @@ A: Much simpler than custom API development. Once we provide your role ARN and b
 ## Getting Started
 
 ### For Customers
+
 1. **Contact Sales**: Express interest in S3 integration capabilities
 2. **Provide Credentials**: Share AWS Account ID and External ID with TheyDo
 3. **Receive Setup**: TheyDo engineering provides role ARN and S3 bucket details
@@ -198,16 +249,18 @@ A: Much simpler than custom API development. Once we provide your role ARN and b
 7. **Go Live**: Begin automated uploads to TheyDo
 
 ### Resources
+
 - **Public Repository**: Available at GitHub (theydo/theydo-s3-integrations)
 - **Schema Documentation**: Complete JSON schemas for all supported data types
 - **Example Files**: Sample data formats and CLI usage examples
 - **Data Mapping Templates**: Spreadsheet templates for data structure planning
 
 ### Support & Next Steps
+
 - **Customer Success**: Dedicated support during implementation
 - **Engineering Consultation**: Available for complex data mapping scenarios
 - **Future Roadmap**: Additional data types and enhanced automation features planned
 
 ---
 
-*This integration enables seamless data flow into TheyDo, reducing manual data entry and ensuring consistent, validated imports for better customer experience management.*
+_This integration enables seamless data flow into TheyDo, reducing manual data entry and ensuring consistent, validated imports for better customer experience management._

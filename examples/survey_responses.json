@@ -1,0 +1,38 @@
+{
+  "format": "THEYDO_SURVEY_RESPONSES_V1",
+  "surveyMetadata": {
+    "surveyName": "Q2 NPS Survey",
+    "surveyId": "survey-q2-nps-2026",
+    "convertAllRowsToQuotes": true,
+    "surveyFields": [
+      {
+        "fieldId": "comment",
+        "fieldName": "What can we improve?",
+        "fieldType": "TEXT",
+        "required": true
+      },
+      {
+        "fieldId": "segment",
+        "fieldName": "Customer segment",
+        "fieldType": "TAG_GROUP",
+        "tagGroupTitle": "Customer segment",
+        "required": false
+      }
+    ]
+  },
+  "responses": [
+    {
+      "responseId": "resp-1",
+      "responseDateTime": "2026-01-01T09:15:30Z",
+      "responseFields": [
+        { "fieldId": "comment", "textValue": "Faster onboarding would help a lot." },
+        { "fieldId": "segment", "textValue": "Enterprise" }
+      ]
+    },
+    {
+      "responseId": "resp-2",
+      "responseDateTime": "2026-01-02T12:00:00Z",
+      "responseFields": [{ "fieldId": "comment", "textValue": "Great support experience." }]
+    }
+  ]
+}
