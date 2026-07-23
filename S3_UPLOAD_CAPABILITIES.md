@@ -53,7 +53,7 @@ Import raw survey responses for AI mining into the Data Hub:
 - **Metadata** (`surveyMetadata`): survey name, a stable `surveyId` (dedup/upsert key), a list of field definitions, and an optional `convertAllRowsToQuotes` flag
 - **Fields**: each has a unique `fieldId`, `fieldName`, `required` flag, and a `fieldType` (`TEXT`, `TAG_GROUP`, `PERSONA`, `IGNORE`, defaults to `TEXT`)
   - `TAG_GROUP` fields carry a `tagGroupTitle` — the name of the tag group (a named category of tags, e.g. "Sentiment") that each response's value should be coded into. Matched case-insensitively against existing tag groups in the workspace, and auto-created if no match is found
-  - At most one field may be `PERSONA` — its value tells TheyDo which existing customer/user persona each response belongs to, so the resulting quotes get linked to the right persona automatically
+  - At most one field may be `PERSONA` — its value is given to TheyDo's AI, together with the workspace's existing personas, as a hint for which persona each response's quote should be linked to. Unlike `TAG_GROUP`, this is a best-effort AI match against existing personas, not an exact/deterministic lookup, and no new persona is created if there's no good match
 - **Responses**: each has a `responseId`, a UTC `responseDateTime` (ISO-8601 ending in `Z`), and `responseFields` that reference declared fields
 - **`convertAllRowsToQuotes`**: by default, TheyDo's AI reads each response and decides how many quotes (if any) to extract from it — ideal for long free-text answers. Set this to `true` to skip that step and import every response row as one verbatim quote instead — ideal when each response is already a short, atomic answer
 

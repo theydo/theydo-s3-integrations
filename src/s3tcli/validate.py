@@ -38,7 +38,9 @@ def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> Non
         # Column headers cannot be empty (consumer: validateAiDataSourceMetadata).
         if not f.get("fieldName"):
             raise ValueError("Column headers cannot be empty")
-        if field_type == "TAG_GROUP" and not f.get("tagGroupTitle"):
+        # Consumer trims tagGroupTitle before checking non-empty, so a
+        # whitespace-only title is equivalent to a missing one.
+        if field_type == "TAG_GROUP" and not (f.get("tagGroupTitle") or "").strip():
             raise ValueError(
                 "Column with type TAG_GROUP needs to have tagGroupTitle assigned"
             )

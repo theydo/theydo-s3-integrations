@@ -189,7 +189,7 @@ Each declared field has a `fieldType` of `TEXT`, `TAG_GROUP`, `PERSONA`, or `IGN
 
 - **`TEXT`** — imported as plain text, no special handling.
 - **`TAG_GROUP`** — each response's value for this field is coded as a tag inside the tag group named by the field's `tagGroupTitle`. A *tag group* is a named category of tags used to classify feedback (e.g. a "Sentiment" tag group containing tags like Positive/Neutral/Negative). `tagGroupTitle` is matched case-insensitively against tag groups that already exist in the target workspace; if no match is found, **a new tag group is created automatically with that exact title** — so a typo in `tagGroupTitle` silently creates a stray tag group rather than raising an error or being ignored.
-- **`PERSONA`** — each response's value identifies which *persona* (an existing customer/user segment defined in the workspace, e.g. "Power User" or "New Customer") that response belongs to, so the resulting quotes are linked to the right persona automatically. At most one field per file may use `fieldType: PERSONA`.
+- **`PERSONA`** — each response's value (an existing customer/user segment defined in the workspace, e.g. "Power User" or "New Customer") is given to TheyDo's AI, together with the workspace's existing personas, as a hint for which persona each response's quote should be linked to. Unlike `TAG_GROUP`, this is a best-effort AI match against existing personas, not an exact/deterministic lookup — there's no guaranteed match and no persona is created if there isn't a good one. At most one field per file may use `fieldType: PERSONA`.
 - **`IGNORE`** — the column is present in the source data but is skipped on import.
 
 #### `convertAllRowsToQuotes`
@@ -210,6 +210,8 @@ An optional boolean on `surveyMetadata` / `feedbackMetadata` that controls how T
 5. Every field's `fieldId` must be unique within the metadata; a duplicate is rejected.
 6. Every `responses[].responseFields[].fieldId` must reference a `fieldId` declared in the metadata fields.
 7. Every `responses[].responseFields[].fieldId` must be unique within its response; a duplicate is rejected.
+
+Note: the schema declares `additionalProperties: false`, so `test-format` rejects unknown keys — this is stricter than actual ingest, which silently ignores unknown keys rather than rejecting the file. Run `test-format` to catch typos before upload; ingest itself won't flag them.
 
 **Example**
 
