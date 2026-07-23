@@ -183,17 +183,33 @@ The two formats are otherwise identical. Each declares its fields up front and t
 
 `surveyId` / `feedbackId` is a stable dedup/upsert key — re-uploading the same id updates the same data source. It is not validated; it just affects how the upload is applied.
 
+#### Field types
+
+Each declared field has a `fieldType` of `TEXT`, `TAG_GROUP`, `PERSONA`, or `IGNORE` (default `TEXT`):
+
+- **`TEXT`** — imported as plain text, no special handling.
+- **`TAG_GROUP`** — each response's value for this field is coded as a tag inside the tag group named by the field's `tagGroupTitle`. A *tag group* is a named category of tags used to classify feedback (e.g. a "Sentiment" tag group containing tags like Positive/Neutral/Negative). `tagGroupTitle` is matched case-insensitively against tag groups that already exist in the target workspace; if no match is found, **a new tag group is created automatically with that exact title** — so a typo in `tagGroupTitle` silently creates a stray tag group rather than raising an error or being ignored.
+- **`PERSONA`** — each response's value identifies which *persona* (an existing customer/user segment defined in the workspace, e.g. "Power User" or "New Customer") that response belongs to, so the resulting quotes are linked to the right persona automatically. At most one field per file may use `fieldType: PERSONA`.
+- **`IGNORE`** — the column is present in the source data but is skipped on import.
+
+#### `convertAllRowsToQuotes`
+
+An optional boolean on `surveyMetadata` / `feedbackMetadata` that controls how TheyDo's AI turns responses into *quotes* (the atomic unit of customer feedback in TheyDo):
+
+- **`false` (default)** — the AI reads each response's text and decides what to extract, producing zero, one, or several quotes per response. Best for long free-text or transcript-style answers.
+- **`true`** — skips AI extraction entirely and imports every response row as exactly one quote, verbatim. Best when each response is already a short, atomic answer (e.g. a single survey question) that doesn't need AI interpretation.
+
+#### Validation rules
+
 `test-format` enforces the following. Rules 1–2 come from the JSON Schema itself; rules 3–7 are cross-field checks that JSON Schema cannot express:
 
 1. The structure, required keys, and types declared in the schema, including that `format` matches the file's format const.
 2. `responseDateTime` must be ISO-8601 in UTC ending in `Z` (e.g. `2026-01-01T00:00:00Z`). Naive datetimes and numeric offsets (e.g. `+02:00`) are rejected — convert to UTC.
 3. `fieldName` must be non-empty on every field.
-4. `tagGroupTitle` is required on any field whose `fieldType` is `TAG_GROUP`. It's matched against existing tag groups case-insensitively; if no tag group with that title exists yet in the workspace, one is created automatically — a typo in `tagGroupTitle` creates a stray tag group rather than being ignored. At most one field may be `fieldType: PERSONA`.
+4. `tagGroupTitle` is required on any field whose `fieldType` is `TAG_GROUP`. At most one field may be `fieldType: PERSONA`.
 5. Every field's `fieldId` must be unique within the metadata; a duplicate is rejected.
 6. Every `responses[].responseFields[].fieldId` must reference a `fieldId` declared in the metadata fields.
 7. Every `responses[].responseFields[].fieldId` must be unique within its response; a duplicate is rejected.
-
-`fieldType` is one of `TEXT`, `TAG_GROUP`, `PERSONA`, `IGNORE`.
 
 **Example**
 
