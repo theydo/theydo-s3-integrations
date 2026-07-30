@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./FeedbackResponsesFile.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "$ref": "#/$defs/schema0"
+    },
+    "feedbackMetadata": {
+      "$ref": "#/$defs/schema1"
+    },
+    "responses": {
+      "$ref": "#/$defs/schema11"
+    }
+  },
+  "required": [
+    "format",
+    "feedbackMetadata",
+    "responses"
+  ],
+  "additionalProperties": false,
+  "title": "FeedbackResponsesFile",
+  "description": "JSON import for feedback responses",
+  "$defs": {
+    "schema0": {
+      "type": "string",
+      "const": "THEYDO_FEEDBACK_RESPONSES_V1"
+    },
+    "schema1": {
+      "type": "object",
+      "description": "Describes the feedback source and declares the columns ('fields') that each response below will provide values for",
+      "properties": {
+        "feedbackName": {
+          "$ref": "#/$defs/schema2"
+        },
+        "feedbackId": {
+          "$ref": "#/$defs/schema3"
+        },
+        "feedbackFields": {
+          "$ref": "#/$defs/schema4"
+        },
+        "convertAllRowsToQuotes": {
+          "$ref": "#/$defs/schema10"
+        }
+      },
+      "required": [
+        "feedbackName",
+        "feedbackId",
+        "feedbackFields"
+      ],
+      "additionalProperties": false
+    },
+    "schema2": {
+      "type": "string",
+      "description": "Display name of the feedback source shown in TheyDo"
+    },
+    "schema3": {
+      "type": "string",
+      "description": "Stable unique identifier for this feedback source. Re-uploading a file with the same feedbackId updates the existing data source instead of creating a new one"
+    },
+    "schema4": {
+      "type": "array",
+      "description": "Declares every column that appears in this source's responses, and how each one should be interpreted on import",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fieldId": {
+            "$ref": "#/$defs/schema5"
+          },
+          "fieldName": {
+            "$ref": "#/$defs/schema6"
+          },
+          "fieldType": {
+            "$ref": "#/$defs/schema7"
+          },
+          "tagGroupTitle": {
+            "$ref": "#/$defs/schema8"
+          },
+          "required": {
+            "$ref": "#/$defs/schema9"
+          }
+        },
+        "required": [
+          "fieldId",
+          "fieldName",
+          "required"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "schema5": {
+      "type": "string",
+      "description": "Stable identifier for this field, referenced by responses[].responseFields[].fieldId"
+    },
+    "schema6": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display label for this field/column shown in TheyDo"
+    },
+    "schema7": {
+      "default": "TEXT",
+      "type": "string",
+      "enum": [
+        "TEXT",
+        "TAG_GROUP",
+        "PERSONA",
+        "IGNORE"
+      ],
+      "description": "How this field's values should be imported. TEXT (default): imported as plain text with no special handling. TAG_GROUP: each response's value for this field is coded as a tag inside the tag group named by tagGroupTitle (a tag group is a named category of tags used to classify feedback, e.g. 'Sentiment' containing tags like Positive/Neutral/Negative). PERSONA: each response's value identifies which persona (an existing customer/user segment in the TheyDo workspace) that response belongs to — at most one field per file may use PERSONA. IGNORE: the column exists in the source data but is skipped on import."
+    },
+    "schema8": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Required when fieldType is TAG_GROUP: the display name of the tag group this field's values should be coded into. Matched case-insensitively against tag groups that already exist in the workspace; if no match is found, a new tag group is created with this exact title — so a typo creates a new, unintended tag group rather than raising an error"
+    },
+    "schema9": {
+      "type": "boolean",
+      "description": "Whether this field must have a non-empty value in every response"
+    },
+    "schema10": {
+      "type": "boolean",
+      "description": "Controls how TheyDo's AI turns responses into quotes (the atomic unit of customer feedback in TheyDo). Default false: AI analyzes each response's text and extracts zero, one, or multiple quotes from it, as it judges appropriate — best for long free-text or transcript-style answers. Set to true to skip that extraction step and import every response row as exactly one quote, verbatim — best when each response is already a short, atomic answer that doesn't need AI interpretation"
+    },
+    "schema11": {
+      "type": "array",
+      "description": "The actual feedback responses. Each response provides one value per declared field via responseFields",
+      "items": {
+        "type": "object",
+        "properties": {
+          "responseId": {
+            "type": "string",
+            "description": "Unique identifier for this response"
+          },
+          "responseDateTime": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
+            "description": "When this response was submitted, as an ISO-8601 UTC timestamp ending in 'Z' (e.g. 2026-01-01T00:00:00Z). Naive datetimes or numeric offsets (e.g. +02:00) are rejected — convert to UTC first"
+          },
+          "responseFields": {
+            "type": "array",
+            "description": "The values this response provided, one entry per field it answers",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fieldId": {
+                  "type": "string",
+                  "description": "Must match a fieldId declared in feedbackMetadata.feedbackFields, and must be unique within this response"
+                },
+                "textValue": {
+                  "type": "string",
+                  "description": "The raw text value provided for this field in this response"
+                }
+              },
+              "required": [
+                "fieldId",
+                "textValue"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "responseId",
+          "responseDateTime",
+          "responseFields"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

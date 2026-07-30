@@ -1,10 +1,11 @@
 # TheyDo x AWS S3
 
 As a TheyDo customer you can setup an S3 integration
-to automatically ingest data from any source application 
+to automatically ingest data from any source application
 as long as it adheres to the specified json schemas.
 
 This repository serves as documentation of:
+
 - available [schemas](schemas/)
 - [examples](examples/) and example use cases
 - [aws cli](#aws-cli) commands for necessary configuration
@@ -13,23 +14,27 @@ This repository serves as documentation of:
 ## Required Configuration Variables
 
 ### AWS Account & Authentication
+
 - **AWS Account** - your AWS account, share your **account id** with us to get started. If AWS is not yet part of your infrastructure, reach out and we will be able to provide a solution.
 - **AWS Region** - Target region (typically `eu-west-1`) - shared by TheyDo
 - **Role ARN** - The Amazon Resource Name of the role to assume (format: `arn:aws:iam::<account>:role/<name>`) - shared by TheyDo
-  - this role allows an external account to access 'Bucket Name/Bucket Prefix'
+    - this role allows an external account to access 'Bucket Name/Bucket Prefix'
 - **External ID** - Required by the role's trust policy for additional security - shared by TheyDo
 
 ### S3 Bucket Configuration
+
 - **Bucket Name** - Target S3 bucket name (e.g., `theydo-ext-dev-eu-west-1`) - shared by TheyDo
 - **Bucket Prefix** - Key prefix/folder path within the bucket where files will be uploaded - shared by TheyDo
 
 ### Role permissions
+
 Role permissions are strictly limited to what is needed to upload files to the bucket prefix.
 This means that tools like [S3 Browser](https://s3browser.com/) will not be successful in connecting to the bucket as they require a bigger permission scope.
 
 ## AWS CLI
 
 ### Profile configuration example for static credentials
+
 You need to know your <aws_access_key_id> and <aws_secret_access_key> to provide in the first step.
 
 ```
@@ -43,11 +48,13 @@ aws configure set external_id <external_id> --profile <role_profile>
 ```
 
 ### Profile verification
+
 ```
 aws sts get-caller-identity --profile <role_profile>
 ```
 
 ### Commands
+
 ```
 aws s3 ls s3://<bucket_name>/<bucket_prefix> --summarize --profile jb-test-role
 aws s3 cp <local_file_name> s3://<bucket_name>/<bucket_prefix>/<remote_file_name> --profile <role_profile>
@@ -164,3 +171,56 @@ The CLI composes a key like:
 3. If the property is set in the import json
    a) the owner is updated to the user it maps to if such user exists in the workspace
    b) if no such user exists it is treated as not in the json (see 1.)
+
+### Survey & Feedback Responses
+
+Two formats import raw survey/feedback responses for AI mining:
+
+- `THEYDO_SURVEY_RESPONSES_V1` — schema [`schemas/SurveyResponsesFile.schema.json`](schemas/SurveyResponsesFile.schema.json), example [`examples/survey_responses.json`](examples/survey_responses.json). Uses a `surveyMetadata` wrapper (`surveyName`, `surveyId`, `surveyFields`).
+- `THEYDO_FEEDBACK_RESPONSES_V1` — schema [`schemas/FeedbackResponsesFile.schema.json`](schemas/FeedbackResponsesFile.schema.json), example [`examples/feedback_responses.json`](examples/feedback_responses.json). Uses a `feedbackMetadata` wrapper (`feedbackName`, `feedbackId`, `feedbackFields`).
+
+The two formats are otherwise identical. Each declares its fields up front and then lists responses whose values reference those fields.
+
+`surveyId` / `feedbackId` is a stable dedup/upsert key — re-uploading the same id updates the same data source. It is not validated; it just affects how the upload is applied.
+
+#### Field types
+
+Each declared field has a `fieldType` of `TEXT`, `TAG_GROUP`, `PERSONA`, or `IGNORE` (default `TEXT`):
+
+- **`TEXT`** — imported as plain text, no special handling.
+- **`TAG_GROUP`** — each response's value for this field is coded as a tag inside the tag group named by the field's `tagGroupTitle`. A *tag group* is a named category of tags used to classify feedback (e.g. a "Sentiment" tag group containing tags like Positive/Neutral/Negative). `tagGroupTitle` is matched case-insensitively against tag groups that already exist in the target workspace; if no match is found, **a new tag group is created automatically with that exact title** — so a typo in `tagGroupTitle` silently creates a stray tag group rather than raising an error or being ignored.
+- **`PERSONA`** — each response's value (an existing customer/user segment defined in the workspace, e.g. "Power User" or "New Customer") is given to TheyDo's AI, together with the workspace's existing personas, as a hint for which persona each response's quote should be linked to. Unlike `TAG_GROUP`, this is a best-effort AI match against existing personas, not an exact/deterministic lookup — there's no guaranteed match and no persona is created if there isn't a good one. At most one field per file may use `fieldType: PERSONA`.
+- **`IGNORE`** — the column is present in the source data but is skipped on import.
+
+#### `convertAllRowsToQuotes`
+
+An optional boolean on `surveyMetadata` / `feedbackMetadata` that controls how TheyDo's AI turns responses into *quotes* (the atomic unit of customer feedback in TheyDo):
+
+- **`false` (default)** — the AI reads each response's text and decides what to extract, producing zero, one, or several quotes per response. Best for long free-text or transcript-style answers.
+- **`true`** — skips AI extraction entirely and imports every response row as exactly one quote, verbatim. Best when each response is already a short, atomic answer (e.g. a single survey question) that doesn't need AI interpretation.
+
+#### Validation rules
+
+`test-format` enforces the following. Rules 1–2 come from the JSON Schema itself; rules 3–7 are cross-field checks that JSON Schema cannot express:
+
+1. The structure, required keys, and types declared in the schema, including that `format` matches the file's format const.
+2. `responseDateTime` must be ISO-8601 in UTC ending in `Z` (e.g. `2026-01-01T00:00:00Z`). Naive datetimes and numeric offsets (e.g. `+02:00`) are rejected — convert to UTC.
+3. `fieldName` must be non-empty on every field.
+4. `tagGroupTitle` is required on any field whose `fieldType` is `TAG_GROUP`. At most one field may be `fieldType: PERSONA`.
+5. Every field's `fieldId` must be unique within the metadata; a duplicate is rejected.
+6. Every `responses[].responseFields[].fieldId` must reference a `fieldId` declared in the metadata fields.
+7. Every `responses[].responseFields[].fieldId` must be unique within its response; a duplicate is rejected.
+
+Note: the schema declares `additionalProperties: false`, so `test-format` rejects unknown keys — this is stricter than actual ingest, which silently ignores unknown keys rather than rejecting the file. Run `test-format` to catch typos before upload; ingest itself won't flag them.
+
+**Example**
+
+```bash
+s3tcli test-format \
+  --format schemas/SurveyResponsesFile.schema.json \
+  --file   examples/survey_responses.json
+
+s3tcli test-format \
+  --format schemas/FeedbackResponsesFile.schema.json \
+  --file   examples/feedback_responses.json
+```

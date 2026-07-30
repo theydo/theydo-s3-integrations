@@ -1,0 +1,38 @@
+{
+  "format": "THEYDO_FEEDBACK_RESPONSES_V1",
+  "feedbackMetadata": {
+    "feedbackName": "Support Ticket Feedback",
+    "feedbackId": "feedback-support-2026",
+    "convertAllRowsToQuotes": true,
+    "feedbackFields": [
+      {
+        "fieldId": "comment",
+        "fieldName": "Tell us more",
+        "fieldType": "TEXT",
+        "required": true
+      },
+      {
+        "fieldId": "channel",
+        "fieldName": "Channel",
+        "fieldType": "TAG_GROUP",
+        "tagGroupTitle": "Channel",
+        "required": false
+      }
+    ]
+  },
+  "responses": [
+    {
+      "responseId": "resp-1",
+      "responseDateTime": "2026-01-01T09:15:30Z",
+      "responseFields": [
+        { "fieldId": "comment", "textValue": "The agent resolved my issue quickly." },
+        { "fieldId": "channel", "textValue": "Email" }
+      ]
+    },
+    {
+      "responseId": "resp-2",
+      "responseDateTime": "2026-01-03T18:30:00Z",
+      "responseFields": [{ "fieldId": "comment", "textValue": "Wait time was a bit long." }]
+    }
+  ]
+}
