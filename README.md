@@ -164,6 +164,8 @@ The CLI composes a key like:
 
 Applies to `THEYDO_INSIGHTS_V1`, `THEYDO_OPPORTUNITIES_V1`, and `THEYDO_SOLUTIONS_V1`.
 
+These are JSON formats, and the rules below rely on that: JSON can distinguish a key that is omitted from one that is explicitly `null`. A CSV-based import has no way to express an omitted field — every row carries a value for every column — so CSV imports always set every field.
+
 Records are matched by `importKey`, which is unique per workspace: an unknown `importKey` creates the entity, a known one updates it. Every record must include `importKey` and `title` — `title` is required on every import, including re-imports. All other fields are optional and follow the rule below.
 
 | In your JSON | On create              | On update (existing `importKey`)                      |
@@ -184,6 +186,8 @@ Records are matched by `importKey`, which is unique per workspace: an unknown `i
 | `status`, `type`           | Matched against an existing category by title, **or a new category is created** if no match exists.                                                                                                                                                                                                                            |
 | `tags`, `groupTags`        | One merged set: bare `tags` go into the default "Tags" group. "Omitted = leave unchanged" holds only when **both** are omitted — sending either one replaces the entire merged set. Missing tags and tag groups **are created**.                                                                                               |
 | `empathyScore`             | Rounded to one decimal. A value outside `[-2, 2]` is ignored (treated as omitted — it neither fails the file nor changes the stored score).                                                                                                                                                                                    |
+
+The same principle holds across all import formats, including the survey & feedback formats below: **users and personas are matched, never created** by an import, while **tags, tag groups, and categories are created** when missing. The survey & feedback formats match personas by a different mechanism (a best-effort AI match — see [Field types](#field-types)) but likewise never create one.
 
 ### Survey & Feedback Responses
 
