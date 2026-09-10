@@ -160,17 +160,30 @@ The CLI composes a key like:
 
 ## Specific Schema Ingestion Rules
 
-### Treatment of `ownerEmail` property
+### Import Key and Overrides
 
-1. If the property is not in the import json
-   a) if the entity exists, owner is left as is
-   b) if the entity does not exist it is created without owner
-2. if the property is 'null' in the import json
-   a) if the entity exists, owner is removed
-   b) if the entity does not exist, it is created without owner
-3. If the property is set in the import json
-   a) the owner is updated to the user it maps to if such user exists in the workspace
-   b) if no such user exists it is treated as not in the json (see 1.)
+Applies to `THEYDO_INSIGHTS_V1`, `THEYDO_OPPORTUNITIES_V1`, and `THEYDO_SOLUTIONS_V1`.
+
+Records are matched by `importKey`, which is unique per workspace: an unknown `importKey` creates the entity, a known one updates it. Every record must include `importKey` and `title` — `title` is required on every import, including re-imports. All other fields are optional and follow the rule below.
+
+| In your JSON | On create              | On update (existing `importKey`)                      |
+| ------------ | ---------------------- | ----------------------------------------------------- |
+| key omitted  | field empty / no links | **left unchanged** — existing data preserved          |
+| `null`       | field empty / no links | **cleared** — value removed / all links removed       |
+| value        | set                    | **replaced** — a list replaces the linked set exactly |
+
+- `""` and `0` are values, not clears — they are stored as-is.
+- For list fields, `null` and `[]` are equivalent: both remove all links.
+
+### Fields with special matching behavior
+
+| Field                      | Behavior                                                                                                                                                                                                                                                                                                                       |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ownerEmail`               | Matched against existing workspace users by email. Imports **never create users**. If the email doesn't match any user, the current owner is left unchanged (a typo never wipes ownership); on create the entity simply has no owner. `null` clears the owner; omitted leaves it.                                              |
+| `personas` (insights only) | Takes full persona share URLs (`…/p/<shareKey>`), matched against **existing** personas in the workspace. Imports **never create personas**. Unknown personas are dropped from the list. If a non-empty list matches nothing at all, existing persona links are left untouched — send `[]` or `null` to explicitly unlink all. |
+| `status`, `type`           | Matched against an existing category by title, **or a new category is created** if no match exists.                                                                                                                                                                                                                            |
+| `tags`, `groupTags`        | One merged set: bare `tags` go into the default "Tags" group. "Omitted = leave unchanged" holds only when **both** are omitted — sending either one replaces the entire merged set. Missing tags and tag groups **are created**.                                                                                               |
+| `empathyScore`             | Rounded to one decimal. A value outside `[-2, 2]` is ignored (treated as omitted — it neither fails the file nor changes the stored score).                                                                                                                                                                                    |
 
 ### Survey & Feedback Responses
 
@@ -188,13 +201,13 @@ The two formats are otherwise identical. Each declares its fields up front and t
 Each declared field has a `fieldType` of `TEXT`, `TAG_GROUP`, `PERSONA`, or `IGNORE` (default `TEXT`):
 
 - **`TEXT`** — imported as plain text, no special handling.
-- **`TAG_GROUP`** — each response's value for this field is coded as a tag inside the tag group named by the field's `tagGroupTitle`. A *tag group* is a named category of tags used to classify feedback (e.g. a "Sentiment" tag group containing tags like Positive/Neutral/Negative). `tagGroupTitle` is matched case-insensitively against tag groups that already exist in the target workspace; if no match is found, **a new tag group is created automatically with that exact title** — so a typo in `tagGroupTitle` silently creates a stray tag group rather than raising an error or being ignored.
+- **`TAG_GROUP`** — each response's value for this field is coded as a tag inside the tag group named by the field's `tagGroupTitle`. A _tag group_ is a named category of tags used to classify feedback (e.g. a "Sentiment" tag group containing tags like Positive/Neutral/Negative). `tagGroupTitle` is matched case-insensitively against tag groups that already exist in the target workspace; if no match is found, **a new tag group is created automatically with that exact title** — so a typo in `tagGroupTitle` silently creates a stray tag group rather than raising an error or being ignored.
 - **`PERSONA`** — each response's value (an existing customer/user segment defined in the workspace, e.g. "Power User" or "New Customer") is given to TheyDo's AI, together with the workspace's existing personas, as a hint for which persona each response's quote should be linked to. Unlike `TAG_GROUP`, this is a best-effort AI match against existing personas, not an exact/deterministic lookup — there's no guaranteed match and no persona is created if there isn't a good one. At most one field per file may use `fieldType: PERSONA`.
 - **`IGNORE`** — the column is present in the source data but is skipped on import.
 
 #### `convertAllRowsToQuotes`
 
-An optional boolean on `surveyMetadata` / `feedbackMetadata` that controls how TheyDo's AI turns responses into *quotes* (the atomic unit of customer feedback in TheyDo):
+An optional boolean on `surveyMetadata` / `feedbackMetadata` that controls how TheyDo's AI turns responses into _quotes_ (the atomic unit of customer feedback in TheyDo):
 
 - **`false` (default)** — the AI reads each response's text and decides what to extract, producing zero, one, or several quotes per response. Best for long free-text or transcript-style answers.
 - **`true`** — skips AI extraction entirely and imports every response row as exactly one quote, verbatim. Best when each response is already a short, atomic answer (e.g. a single survey question) that doesn't need AI interpretation.
