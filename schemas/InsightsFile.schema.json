@@ -1,6 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "./InsightsFile.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "THEYDO_INSIGHTS_V1"
+    },
+    "insights": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Insight"
+      },
+      "title": "Insights"
+    }
+  },
+  "required": [
+    "format",
+    "insights"
+  ],
+  "additionalProperties": false,
   "title": "InsightsFile",
   "description": "JSON import/export for insights",
   "examples": [
@@ -14,34 +33,13 @@
       ]
     }
   ],
-  "type": "object",
-  "properties": {
-    "format": {
-      "type": "string",
-      "const": "THEYDO_INSIGHTS_V1"
-    },
-    "insights": {
-      "title": "Insights",
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/Insight"
-      }
-    }
-  },
-  "required": [
-    "format",
-    "insights"
-  ],
-  "additionalProperties": false,
   "$defs": {
     "Insight": {
-      "title": "Insight",
-      "description": "Data for one insight",
       "type": "object",
       "properties": {
         "importKey": {
-          "description": "Unique identifier for insight",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for insight"
         },
         "title": {
           "type": "string"
@@ -185,13 +183,29 @@
               "type": "null"
             }
           ]
+        },
+        "personas": {
+          "description": "Persona share URLs (.../p/<shareKey>) to link the insight to. Personas that do not exist in the target workspace are ignored.",
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
         "importKey",
         "title"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "Insight",
+      "description": "Data for one insight"
     }
   }
 }

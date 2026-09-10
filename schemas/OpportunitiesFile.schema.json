@@ -1,6 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "./OpportunitiesFile.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "THEYDO_OPPORTUNITIES_V1"
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Opportunity"
+      },
+      "title": "Opportunities"
+    }
+  },
+  "required": [
+    "format",
+    "opportunities"
+  ],
+  "additionalProperties": false,
   "title": "OpportunitiesFile",
   "description": "JSON import/export for opportunities",
   "examples": [
@@ -14,34 +33,13 @@
       ]
     }
   ],
-  "type": "object",
-  "properties": {
-    "format": {
-      "type": "string",
-      "const": "THEYDO_OPPORTUNITIES_V1"
-    },
-    "opportunities": {
-      "title": "Opportunities",
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/Opportunity"
-      }
-    }
-  },
-  "required": [
-    "format",
-    "opportunities"
-  ],
-  "additionalProperties": false,
   "$defs": {
     "Opportunity": {
-      "title": "Opportunity",
-      "description": "Data for one opportunity",
       "type": "object",
       "properties": {
         "importKey": {
-          "description": "Unique identifier for opportunity",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for opportunity"
         },
         "title": {
           "type": "string"
@@ -160,7 +158,9 @@
         "importKey",
         "title"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "Opportunity",
+      "description": "Data for one opportunity"
     }
   }
 }
