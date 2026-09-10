@@ -1,6 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "./OpportunitiesFile.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "THEYDO_OPPORTUNITIES_V1"
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Opportunity"
+      },
+      "title": "Opportunities"
+    }
+  },
+  "required": [
+    "format",
+    "opportunities"
+  ],
+  "additionalProperties": false,
   "title": "OpportunitiesFile",
   "description": "JSON import/export for opportunities",
   "examples": [
@@ -14,34 +33,13 @@
       ]
     }
   ],
-  "type": "object",
-  "properties": {
-    "format": {
-      "type": "string",
-      "const": "THEYDO_OPPORTUNITIES_V1"
-    },
-    "opportunities": {
-      "title": "Opportunities",
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/Opportunity"
-      }
-    }
-  },
-  "required": [
-    "format",
-    "opportunities"
-  ],
-  "additionalProperties": false,
   "$defs": {
     "Opportunity": {
-      "title": "Opportunity",
-      "description": "Data for one opportunity",
       "type": "object",
       "properties": {
         "importKey": {
-          "description": "Unique identifier for opportunity",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for opportunity"
         },
         "title": {
           "type": "string"
@@ -143,7 +141,7 @@
           ]
         },
         "ownerEmail": {
-          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
+          "description": "Email of an existing workspace user to set as the owner. Users are never created by import; if no user with this email exists, the owner is left unchanged.",
           "oneOf": [
             {
               "type": "string",
@@ -160,7 +158,9 @@
         "importKey",
         "title"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "Opportunity",
+      "description": "Data for one opportunity"
     }
   }
 }

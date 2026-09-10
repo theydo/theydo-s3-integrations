@@ -1,6 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "./InsightsFile.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "THEYDO_INSIGHTS_V1"
+    },
+    "insights": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Insight"
+      },
+      "title": "Insights"
+    }
+  },
+  "required": [
+    "format",
+    "insights"
+  ],
+  "additionalProperties": false,
   "title": "InsightsFile",
   "description": "JSON import/export for insights",
   "examples": [
@@ -14,34 +33,13 @@
       ]
     }
   ],
-  "type": "object",
-  "properties": {
-    "format": {
-      "type": "string",
-      "const": "THEYDO_INSIGHTS_V1"
-    },
-    "insights": {
-      "title": "Insights",
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/Insight"
-      }
-    }
-  },
-  "required": [
-    "format",
-    "insights"
-  ],
-  "additionalProperties": false,
   "$defs": {
     "Insight": {
-      "title": "Insight",
-      "description": "Data for one insight",
       "type": "object",
       "properties": {
         "importKey": {
-          "description": "Unique identifier for insight",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for insight"
         },
         "title": {
           "type": "string"
@@ -174,12 +172,26 @@
           ]
         },
         "ownerEmail": {
-          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
+          "description": "Email of an existing workspace user to set as the owner. Users are never created by import; if no user with this email exists, the owner is left unchanged.",
           "oneOf": [
             {
               "type": "string",
               "format": "email",
               "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "personas": {
+          "description": "Persona share URLs (.../p/<shareKey>) to link the insight to. Personas that do not exist in the target workspace are ignored.",
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             {
               "type": "null"
@@ -191,7 +203,9 @@
         "importKey",
         "title"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "Insight",
+      "description": "Data for one insight"
     }
   }
 }

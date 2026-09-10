@@ -1,6 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "./SolutionsFile.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "THEYDO_SOLUTIONS_V1"
+    },
+    "solutions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Solution"
+      },
+      "title": "Solutions"
+    }
+  },
+  "required": [
+    "format",
+    "solutions"
+  ],
+  "additionalProperties": false,
   "title": "SolutionsFile",
   "description": "JSON import/export for solutions",
   "examples": [
@@ -14,34 +33,13 @@
       ]
     }
   ],
-  "type": "object",
-  "properties": {
-    "format": {
-      "type": "string",
-      "const": "THEYDO_SOLUTIONS_V1"
-    },
-    "solutions": {
-      "title": "Solutions",
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/Solution"
-      }
-    }
-  },
-  "required": [
-    "format",
-    "solutions"
-  ],
-  "additionalProperties": false,
   "$defs": {
     "Solution": {
-      "title": "Solution",
-      "description": "Data for one solution",
       "type": "object",
       "properties": {
         "importKey": {
-          "description": "Unique identifier for solution",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for solution"
         },
         "title": {
           "type": "string"
@@ -158,7 +156,7 @@
           ]
         },
         "ownerEmail": {
-          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
+          "description": "Email of an existing workspace user to set as the owner. Users are never created by import; if no user with this email exists, the owner is left unchanged.",
           "oneOf": [
             {
               "type": "string",
@@ -175,7 +173,9 @@
         "importKey",
         "title"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "Solution",
+      "description": "Data for one solution"
     }
   }
 }
