@@ -172,7 +172,7 @@
           ]
         },
         "ownerEmail": {
-          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
+          "description": "Email of an existing workspace user to set as the owner. Users are never created by import; if no user with this email exists, the owner is left unchanged.",
           "oneOf": [
             {
               "type": "string",
