@@ -1,6 +1,42 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "./MetricsFile.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "THEYDO_METRICS_V1"
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/MetricCES"
+          },
+          {
+            "$ref": "#/$defs/MetricCSAT"
+          },
+          {
+            "$ref": "#/$defs/MetricNPS"
+          },
+          {
+            "$ref": "#/$defs/MetricOTHER"
+          },
+          {
+            "$ref": "#/$defs/MetricRATIO"
+          }
+        ],
+        "title": "Metric"
+      },
+      "title": "Metrics"
+    }
+  },
+  "required": [
+    "format",
+    "metrics"
+  ],
+  "additionalProperties": false,
   "title": "MetricsFile",
   "description": "JSON import/export for metrics",
   "examples": [
@@ -23,46 +59,8 @@
       ]
     }
   ],
-  "type": "object",
-  "properties": {
-    "format": {
-      "type": "string",
-      "const": "THEYDO_METRICS_V1"
-    },
-    "metrics": {
-      "title": "Metrics",
-      "type": "array",
-      "items": {
-        "title": "Metric",
-        "oneOf": [
-          {
-            "$ref": "#/$defs/MetricCES"
-          },
-          {
-            "$ref": "#/$defs/MetricCSAT"
-          },
-          {
-            "$ref": "#/$defs/MetricNPS"
-          },
-          {
-            "$ref": "#/$defs/MetricOTHER"
-          },
-          {
-            "$ref": "#/$defs/MetricRATIO"
-          }
-        ]
-      }
-    }
-  },
-  "required": [
-    "format",
-    "metrics"
-  ],
-  "additionalProperties": false,
   "$defs": {
     "MetricCES": {
-      "title": "MetricCES",
-      "description": "Metric that contains CES datapoints",
       "type": "object",
       "properties": {
         "type": {
@@ -70,8 +68,8 @@
           "const": "CES"
         },
         "importKey": {
-          "description": "Unique identifier for metric",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for metric"
         },
         "title": {
           "type": "string"
@@ -91,7 +89,7 @@
           "type": "string"
         },
         "ownerEmail": {
-          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
+          "description": "Email of an existing workspace user to set as the owner. Users are never created by import; if no user with this email exists, the owner is left unchanged.",
           "oneOf": [
             {
               "$ref": "#/$defs/Email"
@@ -178,11 +176,11 @@
         "unit",
         "dataPoints"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MetricCES",
+      "description": "Metric that contains CES datapoints"
     },
     "MetricCSAT": {
-      "title": "MetricCSAT",
-      "description": "Metric that contains CSAT datapoints",
       "type": "object",
       "properties": {
         "type": {
@@ -190,8 +188,8 @@
           "const": "CSAT"
         },
         "importKey": {
-          "description": "Unique identifier for metric",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for metric"
         },
         "title": {
           "type": "string"
@@ -211,7 +209,7 @@
           "type": "string"
         },
         "ownerEmail": {
-          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
+          "description": "Email of an existing workspace user to set as the owner. Users are never created by import; if no user with this email exists, the owner is left unchanged.",
           "oneOf": [
             {
               "$ref": "#/$defs/Email"
@@ -298,11 +296,11 @@
         "unit",
         "dataPoints"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MetricCSAT",
+      "description": "Metric that contains CSAT datapoints"
     },
     "MetricNPS": {
-      "title": "MetricNPS",
-      "description": "Metric that contains NPS datapoints",
       "type": "object",
       "properties": {
         "type": {
@@ -310,8 +308,8 @@
           "const": "NPS"
         },
         "importKey": {
-          "description": "Unique identifier for metric",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for metric"
         },
         "title": {
           "type": "string"
@@ -331,7 +329,7 @@
           "type": "string"
         },
         "ownerEmail": {
-          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
+          "description": "Email of an existing workspace user to set as the owner. Users are never created by import; if no user with this email exists, the owner is left unchanged.",
           "oneOf": [
             {
               "$ref": "#/$defs/Email"
@@ -418,11 +416,11 @@
         "unit",
         "dataPoints"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MetricNPS",
+      "description": "Metric that contains NPS datapoints"
     },
     "MetricOTHER": {
-      "title": "MetricOTHER",
-      "description": "Metric that contains OTHER datapoints",
       "type": "object",
       "properties": {
         "type": {
@@ -430,8 +428,8 @@
           "const": "OTHER"
         },
         "importKey": {
-          "description": "Unique identifier for metric",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for metric"
         },
         "title": {
           "type": "string"
@@ -451,7 +449,7 @@
           "type": "string"
         },
         "ownerEmail": {
-          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
+          "description": "Email of an existing workspace user to set as the owner. Users are never created by import; if no user with this email exists, the owner is left unchanged.",
           "oneOf": [
             {
               "$ref": "#/$defs/Email"
@@ -531,13 +529,13 @@
           }
         },
         "aggregationMethod": {
-          "title": "AggregationMethod",
-          "description": "Method to use to aggregate values",
           "type": "string",
           "enum": [
             "SUM",
             "AVERAGE"
-          ]
+          ],
+          "title": "AggregationMethod",
+          "description": "Method to use to aggregate values"
         }
       },
       "required": [
@@ -548,11 +546,11 @@
         "dataPoints",
         "aggregationMethod"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MetricOTHER",
+      "description": "Metric that contains OTHER datapoints"
     },
     "MetricRATIO": {
-      "title": "MetricRATIO",
-      "description": "Metric that contains RATIO datapoints",
       "type": "object",
       "properties": {
         "type": {
@@ -560,8 +558,8 @@
           "const": "RATIO"
         },
         "importKey": {
-          "description": "Unique identifier for metric",
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for metric"
         },
         "title": {
           "type": "string"
@@ -581,7 +579,7 @@
           "type": "string"
         },
         "ownerEmail": {
-          "description": "The ownerEmail property has specific rules that it follows. Refer to the Readme section 'Treatment of ownerEmail'",
+          "description": "Email of an existing workspace user to set as the owner. Users are never created by import; if no user with this email exists, the owner is left unchanged.",
           "oneOf": [
             {
               "$ref": "#/$defs/Email"
@@ -668,11 +666,11 @@
         "unit",
         "dataPoints"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MetricRATIO",
+      "description": "Metric that contains RATIO datapoints"
     },
     "DataPointCES": {
-      "title": "DataPointCES",
-      "description": "CES data point",
       "type": "object",
       "properties": {
         "dateOfMeasurement": {
@@ -696,11 +694,11 @@
         "score",
         "respondents"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "DataPointCES",
+      "description": "CES data point"
     },
     "DataPointCSAT": {
-      "title": "DataPointCSAT",
-      "description": "CSAT data point",
       "type": "object",
       "properties": {
         "dateOfMeasurement": {
@@ -736,11 +734,11 @@
         "verySatisfied",
         "veryUnsatisfied"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "DataPointCSAT",
+      "description": "CSAT data point"
     },
     "DataPointNPS": {
-      "title": "DataPointNPS",
-      "description": "NPS data point",
       "type": "object",
       "properties": {
         "dateOfMeasurement": {
@@ -768,11 +766,11 @@
         "passives",
         "promoters"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "DataPointNPS",
+      "description": "NPS data point"
     },
     "DataPointOTHER": {
-      "title": "DataPointOTHER",
-      "description": "OTHER data point",
       "type": "object",
       "properties": {
         "dateOfMeasurement": {
@@ -792,11 +790,11 @@
         "dateOfMeasurement",
         "value"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "DataPointOTHER",
+      "description": "OTHER data point"
     },
     "DataPointRATIO": {
-      "title": "DataPointRATIO",
-      "description": "RATIO data point",
       "type": "object",
       "properties": {
         "dateOfMeasurement": {
@@ -820,30 +818,30 @@
         "numerator",
         "denominator"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "DataPointRATIO",
+      "description": "RATIO data point"
     },
     "ISODate": {
-      "title": "ISODate",
-      "description": "Date in YYYY-MM-DD format",
       "type": "string",
       "format": "date",
-      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+      "title": "ISODate",
+      "description": "Date in YYYY-MM-DD format"
     },
     "Value": {
+      "type": "number",
       "title": "Value",
-      "description": "Float",
-      "type": "number"
+      "description": "Float"
     },
     "Count": {
-      "title": "Count",
-      "description": "Non-negative integer",
       "type": "integer",
       "minimum": 0,
-      "maximum": 2147483647
+      "maximum": 2147483647,
+      "title": "Count",
+      "description": "Non-negative integer"
     },
     "Dimension": {
-      "title": "Dimension",
-      "description": "Value for one dimension",
       "type": "object",
       "properties": {
         "key": {
@@ -857,21 +855,23 @@
         "key",
         "value"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "Dimension",
+      "description": "Value for one dimension"
     },
     "Email": {
-      "title": "Email",
-      "description": "Email address",
       "type": "string",
       "format": "email",
-      "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+      "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+      "title": "Email",
+      "description": "Email address"
     },
     "Int": {
-      "title": "Int",
-      "description": "Integer",
       "type": "integer",
       "minimum": -2147483648,
-      "maximum": 2147483647
+      "maximum": 2147483647,
+      "title": "Int",
+      "description": "Integer"
     }
   }
 }
