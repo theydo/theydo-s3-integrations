@@ -1,0 +1,22 @@
+{
+  "format": "THEYDO_SUPPORT_LOG_TEXT_V1",
+
+  "sourceSystem": {
+    "id": "zendesk-eu",
+    "name": "Zendesk - EU support"
+  },
+
+  "transcript": {
+    "id": "TICKET-10483",
+    "title": "Payment declined repeatedly",
+    "occurredAt": "2026-08-14T10:05:00Z",
+
+    "text": "Customer: I tried three times and the payment page just spins.\nAgent: Sorry about that - which card are you using?\nCustomer: Amex. It worked fine last month.",
+
+    "tags": [
+      { "groupTitle": "Region", "title": "EMEA" },
+      { "groupTitle": "Touchpoint", "title": "Checkout" }
+    ],
+    "personas": ["Frequent Shopper"]
+  }
+}
