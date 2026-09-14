@@ -207,7 +207,7 @@ _"Enterprise customer migrating from legacy CX platform"_
 - **Cost-Effective**: Eliminates need for expensive custom API development
 
 
-**Ideal Fit**: Companies with engineering resources and complex tool ecosystems
+### **Ideal Fit**: Companies with engineering resources and complex tool ecosystems
 
 - Large enterprises with custom/legacy systems
 - Organizations using platforms without native TheyDo connectors
