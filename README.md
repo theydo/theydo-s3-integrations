@@ -261,7 +261,7 @@ Both formats share the same envelope:
 | `transcript.id` | yes | `[A-Za-z0-9.-]`, 1–128 chars; stable across re-exports | The idempotency key, combined with `sourceSystem.id`. Re-sending the same pair is a silent no-op, not an update — a correction needs a new id. |
 | `transcript.title` | no | Non-empty (after trimming) if present | Data Hub source title; falls back to `transcript.id`. |
 | `transcript.occurredAt` | yes | ISO-8601 in UTC ending in `Z` | When the interaction happened, not when it was exported. Naive datetimes and numeric offsets are rejected. |
-| `transcript.conversation[]` | CONVERSATION only | 1–5000 turns; at least one non-blank `statement` | Turn order is meaningful. |
+| `transcript.conversation[]` | CONVERSATION only | 1–5000 turns; at least one non-blank `statement`; flattened body max 1,000,000 chars | Turn order is meaningful. Flattening joins turns as `[occurredAt] actor: statement` lines — the joined body has the same 1,000,000-char ceiling as the TEXT body. |
 | `transcript.conversation[].actor` | yes | Non-empty (after trimming), max 64 chars, no control characters or Unicode line/paragraph separators | `agent`/`customer` etc. — the prompt uses this to skip agent speech. |
 | `transcript.conversation[].statement` | yes | Any string; control characters and line/paragraph separators are replaced with a space on flattening | Individual turns may be blank as long as at least one in the file is not. |
 | `transcript.conversation[].occurredAt` | no | ISO-8601 in UTC ending in `Z` | Accepted and kept as a `[timestamp]` prefix on the flattened line; not used for anything else yet. |
@@ -294,6 +294,10 @@ the consumer actually enforces:
 4. (CONVERSATION only) at least one `statement` in `transcript.conversation[]` must be non-blank
    after control characters are replaced with a space — an all-blank conversation (or one whose
    only content is control characters) would otherwise create a live, empty Data Hub source.
+5. (CONVERSATION only) the flattened body — turns joined as `[occurredAt] actor: statement` lines
+   — must not exceed 1,000,000 characters, mirroring the consumer's convert-time limit. The TEXT
+   format already has this cap in its schema. Length is counted the way the consumer's JavaScript
+   counts string length (UTF-16 code units), so astral characters such as emoji count as 2.
 
 **Known, accepted gap — not fixed here:** both schemas declare `additionalProperties: false`, so
 `test-format` rejects unknown keys, but real ingest silently drops them instead of rejecting the

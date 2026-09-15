@@ -80,6 +80,14 @@ def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> Non
 # Unicode line/paragraph separators U+2028/U+2029).
 CONTROL_CHARACTER = re.compile("[\u0000-\u001f\u007f\u0080-\u009f\u2028\u2029]")
 
+# The consumer flattens CONVERSATION turns to "[occurredAt] actor: statement" lines and rejects
+# the joined body over 1,000,000 chars at convert time — JSON Schema cannot express this.
+# Length is counted in UTF-16 code units to match the JS String.length ingest measures.
+SUPPORT_LOG_BODY_MAX_LENGTH = 1_000_000
+
+def _utf16_length(text: str) -> int:
+    return len(text.encode("utf-16-le", "surrogatepass")) // 2
+
 def _reject_blank(value: str, label: str) -> None:
     if not value.strip():
         raise ValueError(f"{label} must not be blank/whitespace-only")
@@ -104,6 +112,7 @@ def _check_support_log_file(data: dict, has_conversation: bool) -> None:
         return
 
     any_non_blank_statement = False
+    flattened_lines: list[str] = []
     for turn in transcript.get("conversation") or []:
         actor = turn.get("actor", "")
         _reject_blank(actor, "transcript.conversation[].actor")
@@ -115,8 +124,18 @@ def _check_support_log_file(data: dict, has_conversation: bool) -> None:
         statement = CONTROL_CHARACTER.sub(" ", turn.get("statement", ""))
         if statement.strip():
             any_non_blank_statement = True
+        occurred_at = turn.get("occurredAt")
+        prefix = f"[{occurred_at}] " if occurred_at else ""
+        flattened_lines.append(f"{prefix}{actor.strip()}: {statement}")
 
     if not any_non_blank_statement:
         raise ValueError(
             "transcript.conversation must contain at least one non-empty statement"
+        )
+
+    body_length = _utf16_length("\n".join(flattened_lines))
+    if body_length > SUPPORT_LOG_BODY_MAX_LENGTH:
+        raise ValueError(
+            f"transcript body is {body_length} characters, over the "
+            f"{SUPPORT_LOG_BODY_MAX_LENGTH} character limit"
         )
