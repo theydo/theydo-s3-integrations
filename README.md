@@ -241,3 +241,78 @@ s3tcli test-format \
   --format schemas/FeedbackResponsesFile.schema.json \
   --file   examples/feedback_responses.json
 ```
+
+### Support Logs
+
+**One JSON file per ticket or call.** Each file becomes exactly one Data Hub source, and its
+transcript body is written out as a plain-text file for Journey AI to read. Two formats are
+available — pick one per customer based on whether their export has speaker turns:
+
+- `THEYDO_SUPPORT_LOG_CONVERSATION_V1` (prefer) — schema [`schemas/SupportLogConversationFile.schema.json`](schemas/SupportLogConversationFile.schema.json), example [`examples/support_log_conversation.json`](examples/support_log_conversation.json). Body is an ordered array of `{ actor, statement }` turns, flattened to `actor: statement` lines. Preferred because the prompt can cleanly exclude agent speech when extracting quotes.
+- `THEYDO_SUPPORT_LOG_TEXT_V1` (fallback) — schema [`schemas/SupportLogTextFile.schema.json`](schemas/SupportLogTextFile.schema.json), example [`examples/support_log_text.json`](examples/support_log_text.json). Body is a single `text` blob, passed through verbatim. Offer this only when mapping to turns would block the integration — quote quality degrades without speaker prefixes. A connection can enable both formats at once.
+
+Both formats share the same envelope:
+
+| Field | Req. | Rules | Notes |
+|---|---|---|---|
+| `format` | yes | Exactly `THEYDO_SUPPORT_LOG_CONVERSATION_V1` or `THEYDO_SUPPORT_LOG_TEXT_V1` | Routes the file to the right converter and versions the contract. |
+| `sourceSystem.id` | yes | `[A-Za-z0-9.-]`, 1–128 chars | Stable id of the origin system (e.g. Zendesk, Salesforce). Namespaces `transcript.id` so two systems can both emit ticket "12345" without colliding. |
+| `sourceSystem.name` | yes | Non-empty (after trimming) | Human label, e.g. "Zendesk EU support". |
+| `transcript.id` | yes | `[A-Za-z0-9.-]`, 1–128 chars; stable across re-exports | The idempotency key, combined with `sourceSystem.id`. Re-sending the same pair is a silent no-op, not an update — a correction needs a new id. |
+| `transcript.title` | no | Non-empty (after trimming) if present | Data Hub source title; falls back to `transcript.id`. |
+| `transcript.occurredAt` | yes | ISO-8601 in UTC ending in `Z` | When the interaction happened, not when it was exported. Naive datetimes and numeric offsets are rejected. |
+| `transcript.conversation[]` | CONVERSATION only | 1–5000 turns; at least one non-blank `statement`; flattened body max 1,000,000 chars | Turn order is meaningful. Flattening joins turns as `[occurredAt] actor: statement` lines — the joined body has the same 1,000,000-char ceiling as the TEXT body. |
+| `transcript.conversation[].actor` | yes | Non-empty (after trimming), max 64 chars, no control characters or Unicode line/paragraph separators | `agent`/`customer` etc. — the prompt uses this to skip agent speech. |
+| `transcript.conversation[].statement` | yes | Any string; control characters and line/paragraph separators are replaced with a space on flattening | Individual turns may be blank as long as at least one in the file is not. |
+| `transcript.conversation[].occurredAt` | no | ISO-8601 in UTC ending in `Z` | Accepted and kept as a `[timestamp]` prefix on the flattened line; not used for anything else yet. |
+| `transcript.text` | TEXT only | Non-empty, max 1,000,000 chars | Passed through verbatim. |
+| `transcript.tags[]` | no | Max 50; `{ groupTitle, title }`, both non-empty after trimming, `groupTitle` max 200 chars | Attaches to the Data Hub source, not to individual quotes. Unknown groups/titles are created. |
+| `transcript.personas[]` | no | Max 20; non-empty persona **names** | Matched case-insensitively against existing personas; never created, unmatched names are dropped. |
+
+**Give support logs their own connection.** If any JSON format is enabled on a connection, the
+whole connection is processed as JSON — mixing support logs into a connection that also carries a
+CSV format breaks the CSV path. A support-log-only connection also gets a dedicated,
+higher-throughput queue; mixing formats keeps it on the shared, capped one.
+
+#### Validation rules
+
+`test-format` enforces the following. Rule 1 comes from the JSON Schema itself; the rest are
+cross-field/runtime checks the JSON Schema cannot express, added to `validate.py` to mirror what
+the consumer actually enforces:
+
+1. The structure, required keys, and types declared in the schema, including that `format`
+   matches the file's format const, and (CONVERSATION only) that `conversation` has 1–5000 items.
+2. `sourceSystem.name`, `transcript.title` (if present), `transcript.tags[].groupTitle`,
+   `transcript.tags[].title`, and each `transcript.personas[]` entry must not be whitespace-only.
+   **Discrepancy:** the consumer trims these before checking non-empty, so a string of only spaces
+   satisfies the JSON Schema's `minLength: 1` but is rejected downstream — `test-format` closes
+   that gap.
+3. (CONVERSATION only) `transcript.conversation[].actor` must not be whitespace-only, and must not
+   contain control characters or the Unicode line/paragraph separators U+2028/U+2029.
+   **Discrepancy:** the consumer's own docs state this rule "is not expressible in JSON Schema, so
+   it will not show up in producer-side validation" — `test-format` adds it explicitly.
+4. (CONVERSATION only) at least one `statement` in `transcript.conversation[]` must be non-blank
+   after control characters are replaced with a space — an all-blank conversation (or one whose
+   only content is control characters) would otherwise create a live, empty Data Hub source.
+5. (CONVERSATION only) the flattened body — turns joined as `[occurredAt] actor: statement` lines
+   — must not exceed 1,000,000 characters, mirroring the consumer's convert-time limit. The TEXT
+   format already has this cap in its schema. Length is counted the way the consumer's JavaScript
+   counts string length (UTF-16 code units), so astral characters such as emoji count as 2.
+
+**Known, accepted gap — not fixed here:** both schemas declare `additionalProperties: false`, so
+`test-format` rejects unknown keys, but real ingest silently drops them instead of rejecting the
+file (a misspelled `tagz` produces an untagged ticket with no error). `test-format` is
+intentionally stricter than ingest here, exactly as with the survey/feedback formats above — run it
+to catch typos before upload, since ingest itself won't flag them.
+
+**Example**
+
+```bash
+s3tcli test-format \
+  --format schemas/SupportLogConversationFile.schema.json \
+  --file   examples/support_log_conversation.json
+
+s3tcli test-format \
+  --format schemas/SupportLogTextFile.schema.json \
+  --file   examples/support_log_text.json
+```

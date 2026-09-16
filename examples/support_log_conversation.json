@@ -1,0 +1,26 @@
+{
+  "format": "THEYDO_SUPPORT_LOG_CONVERSATION_V1",
+
+  "sourceSystem": {
+    "id": "zendesk-eu",
+    "name": "Zendesk - EU support"
+  },
+
+  "transcript": {
+    "id": "TICKET-10482",
+    "title": "Cannot complete checkout",
+    "occurredAt": "2026-08-14T09:31:00Z",
+
+    "conversation": [
+      { "actor": "customer", "statement": "I tried three times and the payment page just spins.", "occurredAt": "2026-08-14T09:31:00Z" },
+      { "actor": "agent", "statement": "Sorry about that - which card are you using?", "occurredAt": "2026-08-14T09:33:00Z" },
+      { "actor": "customer", "statement": "Amex. It worked fine last month.", "occurredAt": "2026-08-14T09:34:00Z" }
+    ],
+
+    "tags": [
+      { "groupTitle": "Region", "title": "EMEA" },
+      { "groupTitle": "Touchpoint", "title": "Checkout" }
+    ],
+    "personas": ["Frequent Shopper"]
+  }
+}

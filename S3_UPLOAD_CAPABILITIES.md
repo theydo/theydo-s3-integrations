@@ -2,7 +2,7 @@
 
 ## Overview
 
-TheyDo's S3 integration provides a **universal connector** that enables customers to upload structured JSON data from virtually any system into their TheyDo workspace. This powerful integration currently supports automated import of these core data types: **Solutions**, **Insights**, **Metrics**, **Survey Responses**, and **Feedback Responses**.
+TheyDo's S3 integration provides a **universal connector** that enables customers to upload structured JSON data from virtually any system into their TheyDo workspace. This powerful integration currently supports automated import of these core data types: **Solutions**, **Insights**, **Metrics**, **Survey Responses**, **Feedback Responses**, and **Support Logs**.
 
 **🚀 Real-World Success**: Our #1 customer Siemens has successfully implemented this integration to connect Polarion, Adlytics, and Adobe Analytics - demonstrating the flexibility to integrate platforms that don't have native TheyDo connectors.
 
@@ -64,6 +64,17 @@ Import raw survey responses for AI mining into the Data Hub:
 Identical in shape to Survey Responses but for feedback sources, using a `feedbackMetadata` wrapper (`feedbackName`, `feedbackId`, `feedbackFields`).
 
 **Use Cases**: Importing support/feedback channels' raw responses for AI mining
+
+### 6. Support Logs (`THEYDO_SUPPORT_LOG_CONVERSATION_V1` / `THEYDO_SUPPORT_LOG_TEXT_V1`)
+
+Import support tickets and call transcripts, one file per ticket/call, each becoming a single Data Hub source for AI mining:
+
+- **Required**: source system id/name, a stable ticket/transcript id, a UTC `occurredAt`, and a transcript body
+- **Body, two variants**: `CONVERSATION_V1` takes ordered speaker turns (`actor`/`statement`) for cleaner quote extraction; `TEXT_V1` takes a single verbatim text blob as a fallback when turns aren't available
+- **Optional**: title (defaults to the ticket id), tags (attached to the source, auto-created if unknown), personas (matched by name, never created)
+- Re-sending the same source+ticket id is a no-op — tickets are treated as immutable
+
+**Use Cases**: Importing helpdesk/CRM tickets (Zendesk, Salesforce) or call-center transcripts for AI-mined customer quotes
 
 ## Security & Setup
 
