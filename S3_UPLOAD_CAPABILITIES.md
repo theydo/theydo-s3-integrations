@@ -2,7 +2,7 @@
 
 ## Overview
 
-TheyDo's S3 integration provides a **universal connector** that enables customers to upload structured JSON data from virtually any system into their TheyDo workspace. This powerful integration currently supports automated import of these core data types: **Solutions**, **Insights**, **Metrics**, **Survey Responses**, **Feedback Responses**, and **Support Logs**.
+TheyDo's S3 integration provides a **universal connector** that enables customers to upload structured JSON data from virtually any system into their TheyDo workspace. This powerful integration currently supports automated import of these core data types: **Solutions**, **Insights**, **Metrics**, **Survey Responses**, **Feedback Responses**, **Support Logs**, and **Interviews**.
 
 **🚀 Real-World Success**: Our #1 customer Siemens has successfully implemented this integration to connect Polarion, Adlytics, and Adobe Analytics - demonstrating the flexibility to integrate platforms that don't have native TheyDo connectors.
 
@@ -75,6 +75,17 @@ Import support tickets and call transcripts, one file per ticket/call, each beco
 - Re-sending the same source+ticket id is a no-op — tickets are treated as immutable
 
 **Use Cases**: Importing helpdesk/CRM tickets (Zendesk, Salesforce) or call-center transcripts for AI-mined customer quotes
+
+### 7. Interviews (`THEYDO_INTERVIEW_CONVERSATION_V1` / `THEYDO_INTERVIEW_TEXT_V1`)
+
+Import interview transcripts, one file per interview, each becoming a single Data Hub source for AI mining:
+
+- **Required**: source system id/name, a stable interview id, a UTC `occurredAt`, and a transcript body
+- **Body, two variants**: `CONVERSATION_V1` takes ordered speaker turns (`actor`/`statement`) for cleaner quote extraction, cleanly separating interviewer prompts from interviewee answers; `TEXT_V1` takes a single verbatim text blob as a fallback when turns aren't available
+- **Optional**: title (defaults to the interview id), tags (attached to the source, auto-created if unknown), personas (matched by name, never created)
+- Re-sending the same source+interview id is a no-op — interviews are treated as immutable
+
+**Use Cases**: Importing interview transcripts from research repositories, call-recording platforms (e.g. Gong), or interview scheduling tools for AI-mined customer quotes
 
 ## Security & Setup
 
