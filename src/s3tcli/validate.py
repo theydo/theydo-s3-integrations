@@ -15,9 +15,14 @@ _RESPONSES_CHECKS = {
     "THEYDO_FEEDBACK_RESPONSES_V1": ("feedbackMetadata", "feedbackFields"),
 }
 
-_SUPPORT_LOG_CHECKS = {
+# Support logs and interviews share one envelope shape (sourceSystem/transcript, optional tags
+# and personas, and a CONVERSATION/TEXT body pair) and one converter contract downstream, so they
+# share one check function below keyed by format -> has_conversation.
+_TRANSCRIPT_CHECKS = {
     "THEYDO_SUPPORT_LOG_CONVERSATION_V1": True,
     "THEYDO_SUPPORT_LOG_TEXT_V1":         False,
+    "THEYDO_INTERVIEW_CONVERSATION_V1":   True,
+    "THEYDO_INTERVIEW_TEXT_V1":           False,
 }
 
 def _run_extra_checks(data: object) -> None:
@@ -27,8 +32,8 @@ def _run_extra_checks(data: object) -> None:
     if keys:
         _check_responses_file(data, *keys)
 
-    if data.get("format") in _SUPPORT_LOG_CHECKS:
-        _check_support_log_file(data, has_conversation=_SUPPORT_LOG_CHECKS[data["format"]])
+    if data.get("format") in _TRANSCRIPT_CHECKS:
+        _check_transcript_file(data, has_conversation=_TRANSCRIPT_CHECKS[data["format"]])
 
 def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> None:
     fields = data.get(metadata_key, {}).get(fields_key, [])
@@ -71,19 +76,23 @@ def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> Non
                 raise ValueError(f"Duplicate fieldId in responseFields: {field_id}")
             seen_response_field_ids.add(field_id)
 
-# --- Support-log checks -------------------------------------------------------
-# The consumer trims sourceSystem.name / transcript.title / tag titles / actor
-# before checking non-empty (Zod `.trim().min(1)`), so a whitespace-only string
-# passes the JSON Schema's `minLength: 1` but is rejected downstream. Same for
-# the actor/statement control-character rules, which the consumer's own docs
-# call out as "not expressible in JSON Schema" (control chars incl. C1 and the
-# Unicode line/paragraph separators U+2028/U+2029).
+# --- Support-log / interview checks -------------------------------------------
+# Both formats share one envelope (sourceSystem/transcript, optional tags and
+# personas, a CONVERSATION/TEXT body pair) and one converter contract, so they
+# share this check function. The consumer trims sourceSystem.name /
+# transcript.title / tag titles / actor before checking non-empty (Zod
+# `.trim().min(1)`), so a whitespace-only string passes the JSON Schema's
+# `minLength: 1` but is rejected downstream. Same for the actor/statement
+# control-character rules: support logs' docs call that "not expressible in
+# JSON Schema", but the interview schemas already reject control characters
+# in `actor` via a `pattern` - this check still runs for both formats since a
+# whitespace-only actor (e.g. "   ") satisfies that pattern regardless.
 CONTROL_CHARACTER = re.compile("[\u0000-\u001f\u007f\u0080-\u009f\u2028\u2029]")
 
 # The consumer flattens CONVERSATION turns to "[occurredAt] actor: statement" lines and rejects
 # the joined body over 1,000,000 chars at convert time — JSON Schema cannot express this.
 # Length is counted in UTF-16 code units to match the JS String.length ingest measures.
-SUPPORT_LOG_BODY_MAX_LENGTH = 1_000_000
+TRANSCRIPT_BODY_MAX_LENGTH = 1_000_000
 
 def _utf16_length(text: str) -> int:
     return len(text.encode("utf-16-le", "surrogatepass")) // 2
@@ -92,7 +101,7 @@ def _reject_blank(value: str, label: str) -> None:
     if not value.strip():
         raise ValueError(f"{label} must not be blank/whitespace-only")
 
-def _check_support_log_file(data: dict, has_conversation: bool) -> None:
+def _check_transcript_file(data: dict, has_conversation: bool) -> None:
     source_system = data.get("sourceSystem", {})
     _reject_blank(source_system.get("name", ""), "sourceSystem.name")
 
@@ -134,8 +143,8 @@ def _check_support_log_file(data: dict, has_conversation: bool) -> None:
         )
 
     body_length = _utf16_length("\n".join(flattened_lines))
-    if body_length > SUPPORT_LOG_BODY_MAX_LENGTH:
+    if body_length > TRANSCRIPT_BODY_MAX_LENGTH:
         raise ValueError(
             f"transcript body is {body_length} characters, over the "
-            f"{SUPPORT_LOG_BODY_MAX_LENGTH} character limit"
+            f"{TRANSCRIPT_BODY_MAX_LENGTH} character limit"
         )

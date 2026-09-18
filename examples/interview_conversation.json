@@ -1,0 +1,26 @@
+{
+  "format": "THEYDO_INTERVIEW_CONVERSATION_V1",
+
+  "sourceSystem": {
+    "id": "gong-eu",
+    "name": "Gong - EU interviews"
+  },
+
+  "transcript": {
+    "id": "INTERVIEW-10482",
+    "title": "Onboarding feedback with Jane",
+    "occurredAt": "2026-08-14T09:31:00Z",
+
+    "conversation": [
+      { "actor": "interviewer", "statement": "How was your onboarding experience?", "occurredAt": "2026-08-14T09:31:00Z" },
+      { "actor": "interviewee", "statement": "It was a bit confusing at first.", "occurredAt": "2026-08-14T09:32:00Z" },
+      { "actor": "interviewer", "statement": "What specifically was confusing?", "occurredAt": "2026-08-14T09:33:00Z" }
+    ],
+
+    "tags": [
+      { "groupTitle": "Region", "title": "EMEA" },
+      { "groupTitle": "Touchpoint", "title": "Onboarding" }
+    ],
+    "personas": ["Frequent Shopper"]
+  }
+}

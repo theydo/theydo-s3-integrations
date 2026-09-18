@@ -1,0 +1,22 @@
+{
+  "format": "THEYDO_INTERVIEW_TEXT_V1",
+
+  "sourceSystem": {
+    "id": "gong-eu",
+    "name": "Gong - EU interviews"
+  },
+
+  "transcript": {
+    "id": "INTERVIEW-10483",
+    "title": "Onboarding feedback with Mark",
+    "occurredAt": "2026-08-14T10:05:00Z",
+
+    "text": "Interviewer: How was your onboarding experience?\nInterviewee: It was a bit confusing at first.\nInterviewer: What specifically was confusing?",
+
+    "tags": [
+      { "groupTitle": "Region", "title": "EMEA" },
+      { "groupTitle": "Touchpoint", "title": "Onboarding" }
+    ],
+    "personas": ["Frequent Shopper"]
+  }
+}
