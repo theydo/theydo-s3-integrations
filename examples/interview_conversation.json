@@ -1,5 +1,6 @@
 {
   "format": "THEYDO_INTERVIEW_CONVERSATION_V1",
+  "ingestMode": "MANUAL_REVIEW",
 
   "sourceSystem": {
     "id": "gong-eu",

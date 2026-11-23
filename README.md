@@ -274,6 +274,31 @@ whole connection is processed as JSON — mixing support logs into a connection 
 CSV format breaks the CSV path. A support-log-only connection also gets a dedicated,
 higher-throughput queue; mixing formats keeps it on the shared, capped one.
 
+#### Manual review
+
+By default (`AUTO`, or `ingestMode` left out) an interview is ingested as soon as it lands. Set
+`"ingestMode": "MANUAL_REVIEW"` when someone needs to choose which speakers to ignore first, for
+example to keep your own team's statements in a sales or research call from becoming quotes. The
+conversation example [`examples/interview_conversation.json`](examples/interview_conversation.json)
+uses it; the text example leaves it out.
+
+A `MANUAL_REVIEW` interview:
+
+1. Lands in Data Hub review and is not ingested.
+2. Has its speakers detected before it shows up in review. If detection fails, the interview still
+   reaches review, without speakers; delivery does not fail.
+3. Waits until a person mutes speakers in the review dialog and starts ingestion in Data Hub.
+   Muted speakers produce no quotes. **Nothing is ingested until someone does this**, so use
+   `MANUAL_REVIEW` only where that review actually happens.
+
+Speaker detection reads the transcript body, so it works best with the conversation format, whose
+turns are flattened to `actor: statement` lines. A text-format body without speaker prefixes
+usually comes back with no speakers.
+
+**The first delivery decides the mode.** Interviews are immutable: re-sending the same
+`sourceSystem.id` + `transcript.id` with a different `ingestMode` does nothing, and cannot move an
+interview into or out of review.
+
 #### Validation rules
 
 `test-format` enforces the following. Rule 1 comes from the JSON Schema itself; the rest are
@@ -281,7 +306,10 @@ cross-field/runtime checks the JSON Schema cannot express, added to `validate.py
 the consumer actually enforces:
 
 1. The structure, required keys, and types declared in the schema, including that `format`
-   matches the file's format const, and (CONVERSATION only) that `conversation` has 1–5000 items.
+   matches the file's format const, that `ingestMode` (if present) is exactly `AUTO` or
+   `MANUAL_REVIEW`, and (CONVERSATION only) that `conversation` has 1–5000 items. `validate.py`
+   repeats the `ingestMode` check with a plain error message, so it still holds against an older
+   schema copy that predates the field.
 2. `sourceSystem.name`, `transcript.title` (if present), `transcript.tags[].groupTitle`,
    `transcript.tags[].title`, and each `transcript.personas[]` entry must not be whitespace-only.
    **Discrepancy:** the consumer trims these before checking non-empty, so a string of only spaces
@@ -331,6 +359,7 @@ Both formats share the same envelope:
 | Field | Req. | Rules | Notes |
 |---|---|---|---|
 | `format` | yes | Exactly `THEYDO_INTERVIEW_CONVERSATION_V1` or `THEYDO_INTERVIEW_TEXT_V1` | Routes the file to the right converter and versions the contract. |
+| `ingestMode` | no | Exactly `AUTO` or `MANUAL_REVIEW`; absent means `AUTO` | Top-level, next to `format` and `sourceSystem` (not inside `transcript`). `MANUAL_REVIEW` holds the interview in Data Hub review instead of ingesting it. See [Manual review](#manual-review) below. |
 | `sourceSystem.id` | yes | `[A-Za-z0-9.-]`, 1–128 chars | Stable id of the origin system (e.g. Gong, an interview scheduling tool). Namespaces `transcript.id` so two systems can both emit interview "12345" without colliding. |
 | `sourceSystem.name` | yes | Non-empty (after trimming) | Human label, e.g. "Gong - EU interviews". |
 | `transcript.id` | yes | `[A-Za-z0-9.-]`, 1–128 chars; stable across re-exports | The idempotency key, combined with `sourceSystem.id`. Re-sending the same pair is a silent no-op, not an update — a correction needs a new id. |

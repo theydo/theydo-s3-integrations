@@ -25,6 +25,9 @@ _TRANSCRIPT_CHECKS = {
     "THEYDO_INTERVIEW_TEXT_V1":           False,
 }
 
+# Interviews (not support logs) take an optional top-level `ingestMode`. Absent means AUTO.
+_INGEST_MODE_FORMATS = {"THEYDO_INTERVIEW_CONVERSATION_V1", "THEYDO_INTERVIEW_TEXT_V1"}
+
 def _run_extra_checks(data: object) -> None:
     if not isinstance(data, dict):
         return
@@ -34,6 +37,9 @@ def _run_extra_checks(data: object) -> None:
 
     if data.get("format") in _TRANSCRIPT_CHECKS:
         _check_transcript_file(data, has_conversation=_TRANSCRIPT_CHECKS[data["format"]])
+
+    if data.get("format") in _INGEST_MODE_FORMATS:
+        _check_ingest_mode(data)
 
 def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> None:
     fields = data.get(metadata_key, {}).get(fields_key, [])
@@ -100,6 +106,17 @@ def _utf16_length(text: str) -> int:
 def _reject_blank(value: str, label: str) -> None:
     if not value.strip():
         raise ValueError(f"{label} must not be blank/whitespace-only")
+
+# The JSON Schema enum already rejects other values; this repeats the rule with a plain message
+# and still holds if the file is checked against an older schema copy without the enum.
+INGEST_MODES = ("AUTO", "MANUAL_REVIEW")
+
+def _check_ingest_mode(data: dict) -> None:
+    if "ingestMode" in data and data["ingestMode"] not in INGEST_MODES:
+        raise ValueError(
+            f"ingestMode must be one of {', '.join(INGEST_MODES)} (omit it for AUTO), "
+            f"got {data['ingestMode']!r}"
+        )
 
 def _check_transcript_file(data: dict, has_conversation: bool) -> None:
     source_system = data.get("sourceSystem", {})
