@@ -108,7 +108,8 @@ def _reject_blank(value: str, label: str) -> None:
         raise ValueError(f"{label} must not be blank/whitespace-only")
 
 # The JSON Schema enum already rejects other values; this repeats the rule with a plain message
-# and still holds if the file is checked against an older schema copy without the enum.
+# for callers of _run_extra_checks. It does not help with an older schema copy: that schema's root
+# `additionalProperties: false` rejects any `ingestMode`, valid or not, before this check runs.
 INGEST_MODES = ("AUTO", "MANUAL_REVIEW")
 
 def _check_ingest_mode(data: dict) -> None:

@@ -1,4 +1,8 @@
-"""ingestMode on the interview formats. Run with: python -m unittest discover -s tests"""
+"""ingestMode on the interview formats.
+
+Run inside the `make` environment (s3tcli installed): python -m unittest discover -s tests
+or from a plain checkout with jsonschema installed: PYTHONPATH=src python -m unittest discover -s tests
+"""
 import copy
 import json
 import tempfile
@@ -56,7 +60,7 @@ class InterviewIngestModeTest(unittest.TestCase):
                         self._validate(schema, _payload(example, mode, set_mode=True))
 
     def test_invalid_values_rejected_by_extra_check(self):
-        # The extra check holds on its own, e.g. against an older schema copy without the enum.
+        # The extra check holds on its own, independent of the schema enum.
         for name, (_, example) in FORMATS.items():
             for mode in ("manual_review", "SKIP", None):
                 with self.subTest(format=name, ingestMode=mode):
@@ -74,9 +78,19 @@ class InterviewIngestModeTest(unittest.TestCase):
             validate_json(example, schema)
 
     def test_support_logs_unaffected(self):
-        # ingestMode is interview-only; the extra check does not apply to support logs.
+        # ingestMode is interview-only: the extra check ignores it on support logs, and the
+        # support-log schema rejects it as an unknown top-level key.
         data = json.loads((ROOT / "examples/support_log_conversation.json").read_text())
         _run_extra_checks(copy.deepcopy(data))
+        for mode in ("MANUAL_REVIEW", "bogus"):
+            with self.subTest(ingestMode=mode):
+                with_mode = copy.deepcopy(data)
+                with_mode["ingestMode"] = mode
+                _run_extra_checks(with_mode)
+                with self.assertRaises(jsonschema.ValidationError):
+                    self._validate(
+                        ROOT / "schemas/SupportLogConversationFile.schema.json", with_mode
+                    )
 
 
 if __name__ == "__main__":
