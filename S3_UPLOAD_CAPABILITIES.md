@@ -83,6 +83,7 @@ Import interview transcripts, one file per interview, each becoming a single Dat
 - **Required**: source system id/name, a stable interview id, a UTC `occurredAt`, and a transcript body
 - **Body, two variants**: `CONVERSATION_V1` takes ordered speaker turns (`actor`/`statement`) for cleaner quote extraction, cleanly separating interviewer prompts from interviewee answers; `TEXT_V1` takes a single verbatim text blob as a fallback when turns aren't available
 - **Optional**: title (defaults to the interview id), tags (attached to the source, auto-created if unknown), personas (matched by name, never created)
+- **Optional manual review**: top-level `ingestMode` is `AUTO` (default when omitted) or `MANUAL_REVIEW`. `MANUAL_REVIEW` holds the interview in Data Hub review with its speakers detected, so a user can mute speakers (e.g. your own team) before a person starts ingestion in Data Hub; nothing is ingested until they do. Speaker detection works best with the conversation format. The first delivery decides the mode; re-sending with a different value does nothing
 - Re-sending the same source+interview id is a no-op — interviews are treated as immutable
 
 **Use Cases**: Importing interview transcripts from research repositories, call-recording platforms (e.g. Gong), or interview scheduling tools for AI-mined customer quotes

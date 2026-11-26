@@ -7,6 +7,13 @@
       "type": "string",
       "const": "THEYDO_INTERVIEW_CONVERSATION_V1"
     },
+    "ingestMode": {
+      "type": "string",
+      "enum": [
+        "AUTO",
+        "MANUAL_REVIEW"
+      ]
+    },
     "sourceSystem": {
       "type": "object",
       "properties": {

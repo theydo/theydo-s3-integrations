@@ -25,6 +25,9 @@ _TRANSCRIPT_CHECKS = {
     "THEYDO_INTERVIEW_TEXT_V1":           False,
 }
 
+# Interviews (not support logs) take an optional top-level `ingestMode`. Absent means AUTO.
+_INGEST_MODE_FORMATS = {"THEYDO_INTERVIEW_CONVERSATION_V1", "THEYDO_INTERVIEW_TEXT_V1"}
+
 def _run_extra_checks(data: object) -> None:
     if not isinstance(data, dict):
         return
@@ -34,6 +37,9 @@ def _run_extra_checks(data: object) -> None:
 
     if data.get("format") in _TRANSCRIPT_CHECKS:
         _check_transcript_file(data, has_conversation=_TRANSCRIPT_CHECKS[data["format"]])
+
+    if data.get("format") in _INGEST_MODE_FORMATS:
+        _check_ingest_mode(data)
 
 def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> None:
     fields = data.get(metadata_key, {}).get(fields_key, [])
@@ -89,7 +95,7 @@ def _check_responses_file(data: dict, metadata_key: str, fields_key: str) -> Non
 # whitespace-only actor (e.g. "   ") satisfies that pattern regardless.
 CONTROL_CHARACTER = re.compile("[\u0000-\u001f\u007f\u0080-\u009f\u2028\u2029]")
 
-# The consumer flattens CONVERSATION turns to "[occurredAt] actor: statement" lines and rejects
+# The consumer flattens CONVERSATION turns to "actor: [occurredAt] statement" lines and rejects
 # the joined body over 1,000,000 chars at convert time — JSON Schema cannot express this.
 # Length is counted in UTF-16 code units to match the JS String.length ingest measures.
 TRANSCRIPT_BODY_MAX_LENGTH = 1_000_000
@@ -100,6 +106,18 @@ def _utf16_length(text: str) -> int:
 def _reject_blank(value: str, label: str) -> None:
     if not value.strip():
         raise ValueError(f"{label} must not be blank/whitespace-only")
+
+# The JSON Schema enum already rejects other values; this repeats the rule with a plain message
+# for callers of _run_extra_checks. It does not help with an older schema copy: that schema's root
+# `additionalProperties: false` rejects any `ingestMode`, valid or not, before this check runs.
+INGEST_MODES = ("AUTO", "MANUAL_REVIEW")
+
+def _check_ingest_mode(data: dict) -> None:
+    if "ingestMode" in data and data["ingestMode"] not in INGEST_MODES:
+        raise ValueError(
+            f"ingestMode must be one of {', '.join(INGEST_MODES)} (omit it for AUTO), "
+            f"got {data['ingestMode']!r}"
+        )
 
 def _check_transcript_file(data: dict, has_conversation: bool) -> None:
     source_system = data.get("sourceSystem", {})
@@ -135,7 +153,7 @@ def _check_transcript_file(data: dict, has_conversation: bool) -> None:
             any_non_blank_statement = True
         occurred_at = turn.get("occurredAt")
         prefix = f"[{occurred_at}] " if occurred_at else ""
-        flattened_lines.append(f"{prefix}{actor.strip()}: {statement}")
+        flattened_lines.append(f"{actor.strip()}: {prefix}{statement}")
 
     if not any_non_blank_statement:
         raise ValueError(
