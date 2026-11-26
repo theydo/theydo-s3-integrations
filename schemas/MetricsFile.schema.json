@@ -100,6 +100,8 @@
           ]
         },
         "targetComparisonOperator": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "string",
@@ -114,6 +116,8 @@
           ]
         },
         "target": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "number"
@@ -124,6 +128,8 @@
           ]
         },
         "groups": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Groups are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",
@@ -137,6 +143,8 @@
           ]
         },
         "groupTags": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Tags are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",
@@ -220,6 +228,8 @@
           ]
         },
         "targetComparisonOperator": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "string",
@@ -234,6 +244,8 @@
           ]
         },
         "target": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "number"
@@ -244,6 +256,8 @@
           ]
         },
         "groups": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Groups are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",
@@ -257,6 +271,8 @@
           ]
         },
         "groupTags": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Tags are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",
@@ -340,6 +356,8 @@
           ]
         },
         "targetComparisonOperator": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "string",
@@ -354,6 +372,8 @@
           ]
         },
         "target": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "number"
@@ -364,6 +384,8 @@
           ]
         },
         "groups": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Groups are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",
@@ -377,6 +399,8 @@
           ]
         },
         "groupTags": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Tags are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",
@@ -460,6 +484,8 @@
           ]
         },
         "targetComparisonOperator": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "string",
@@ -474,6 +500,8 @@
           ]
         },
         "target": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "number"
@@ -484,6 +512,8 @@
           ]
         },
         "groups": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Groups are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",
@@ -497,6 +527,8 @@
           ]
         },
         "groupTags": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Tags are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",
@@ -590,6 +622,8 @@
           ]
         },
         "targetComparisonOperator": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "string",
@@ -604,6 +638,8 @@
           ]
         },
         "target": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Targets are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "number"
@@ -614,6 +650,8 @@
           ]
         },
         "groups": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Groups are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",
@@ -627,6 +665,8 @@
           ]
         },
         "groupTags": {
+          "deprecated": true,
+          "description": "Deprecated: accepted but no longer applied. Tags are managed on metric cards in TheyDo.",
           "oneOf": [
             {
               "type": "array",

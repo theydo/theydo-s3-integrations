@@ -8,12 +8,6 @@
       "description": "Measures how much effort customers had to put in to get their issue resolved.",
       "unit": "score",
       "ownerEmail": "cx-team@example.com",
-      "target": 5.5,
-      "targetComparisonOperator": "LESS_THAN_OR_EQUAL_TO",
-      "groups": ["Customer Experience"],
-      "groupTags": [
-        { "tagGroup": "Channel", "tag": "Support" }
-      ],
       "dataPoints": [
         {
           "dateOfMeasurement": "2025-01-31",
@@ -56,12 +50,6 @@
       "description": "Overall satisfaction rating collected after support interactions.",
       "unit": "responses",
       "ownerEmail": "cx-team@example.com",
-      "target": 80,
-      "targetComparisonOperator": "MORE_THAN_OR_EQUAL_TO",
-      "groups": ["Customer Experience"],
-      "groupTags": [
-        { "tagGroup": "Channel", "tag": "Support" }
-      ],
       "dataPoints": [
         {
           "dateOfMeasurement": "2025-01-31",
@@ -116,12 +104,6 @@
       "description": "Likelihood of customers recommending the product to others.",
       "unit": "responses",
       "ownerEmail": "cx-team@example.com",
-      "target": 40,
-      "targetComparisonOperator": "MORE_THAN_OR_EQUAL_TO",
-      "groups": ["Customer Experience"],
-      "groupTags": [
-        { "tagGroup": "Channel", "tag": "Product" }
-      ],
       "dataPoints": [
         {
           "dateOfMeasurement": "2025-01-31",
@@ -169,12 +151,6 @@
       "unit": "seconds",
       "ownerEmail": "ops-team@example.com",
       "aggregationMethod": "AVERAGE",
-      "target": 300,
-      "targetComparisonOperator": "LESS_THAN_OR_EQUAL_TO",
-      "groups": ["Operations"],
-      "groupTags": [
-        { "tagGroup": "Team", "tag": "Tier 1 Support" }
-      ],
       "dataPoints": [
         {
           "dateOfMeasurement": "2025-01-31",
@@ -213,12 +189,6 @@
       "description": "Proportion of support cases resolved on the first contact.",
       "unit": "cases",
       "ownerEmail": "cx-team@example.com",
-      "target": 75,
-      "targetComparisonOperator": "MORE_THAN_OR_EQUAL_TO",
-      "groups": ["Customer Experience"],
-      "groupTags": [
-        { "tagGroup": "Channel", "tag": "Support" }
-      ],
       "dataPoints": [
         {
           "dateOfMeasurement": "2025-01-31",

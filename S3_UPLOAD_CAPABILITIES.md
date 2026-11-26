@@ -43,6 +43,7 @@ Import structured metrics data with support for:
 - **NPS (Net Promoter Score)**: Promoter/passive/detractor classifications
 - **Custom Metrics**: Flexible "OTHER" and "RATIO" types with custom aggregation
 - **Time-series Data**: All metrics include date-based measurements
+- **Deprecated fields**: `target`, `targetComparisonOperator`, `groups` and `groupTags` are still accepted so existing files keep validating, but they are no longer applied. Targets, groups and tags are managed on metric cards in TheyDo
 
 **Use Cases**: Performance dashboard integration, survey data import, KPI tracking
 
